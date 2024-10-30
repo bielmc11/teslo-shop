@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-no-repeat min-h-screen bg-fixed`} /* IGUAL ESTO DE BG FIXED HAY QUE QUITARLO */
       >
         {children}
       </body>
