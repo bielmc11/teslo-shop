@@ -1,14 +1,14 @@
 import { TopMenu } from "@/components/inedx";
 
 export default function ShopLayout({
- children
+  children,
 }: {
- children: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <main className=" min-h-screen">
-      < TopMenu />
-      {children}
+      <TopMenu />
+      <div className="px-10">{children}</div>
     </main>
   );
 }
