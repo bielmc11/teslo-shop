@@ -25,7 +25,7 @@ export const ProductGridItem = ({ product }: Props) => {
     <div 
         onMouseEnter={onMouseOver}
         onMouseLeave={onMouserOut}
-        className="rounded-md overflow-hidden fade-in"
+        className="rounded-md overflow-hidden fade-in group"
     >
       <Link href={`/product/${product.slug}`}>
         <Image
@@ -38,7 +38,7 @@ export const ProductGridItem = ({ product }: Props) => {
       </Link>
 
       <div className="p-4 flex flex-col" >
-        <Link className="hover:text-blue-600" href={`/product/${product.slug}`}>{product.title}</Link>
+        <Link className="hover:text-blue-600 group-hover:text-blue-600" href={`/product/${product.slug}`}>{product.title}</Link>
         <span className="font-bold">${product.price}</span>
       </div>
     </div>
