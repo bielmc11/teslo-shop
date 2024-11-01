@@ -15,6 +15,9 @@ export default async function CategoryPage({ params }: Props) {
     return notFound()
   }
   return (
-    <Title title='tienda' subtitle="Todos los productos"/>
+    <div>
+
+      <Title title='tienda' subtitle="Todos los productos"/>
+    </div>
   );
 }
