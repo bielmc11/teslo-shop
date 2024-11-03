@@ -1,4 +1,6 @@
 "use client";
+import { useStore } from "@/store";
+import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
 import {
@@ -13,22 +15,34 @@ import {
 } from "react-icons/io5";
 
 export const Sidebar = () => {
+  const isOpen = useStore((state) => state.isOpen);
+  const changeIsOpen = useStore((state) => state.changeIsOpen);
   return (
-    <div>
+    <div >
       {/* bacground black */}
-      <div className="fixed top-0 left-0 w-screen h-screen z-10 bg-black opacity-30"></div>
+      {isOpen && (
+        <div className="fixed top-0 left-0 w-screen h-screen z-10 bg-black opacity-30"></div>
+      )}
 
       {/* Blur */}
-      <div className="fixed top-0 left-0 w-screen h-screen z-10  backdrop-blur-sm "></div>
+      {isOpen && (
+        <div className="fixed top-0 left-0 w-screen h-screen z-10  backdrop-blur-sm "></div>
+      )}
 
       {/* Sidemenu */}
-      {/* Condiciones para si esta abierto o no */}
-      <nav className="fixed top-0 right-0 w-[500px] h-screen z-20 bg-white shadow-2xl transition-all duration-300 transform">
+      <nav
+        className={clsx(
+          "fixed top-0 right-0 w-[500px] h-screen z-20 bg-white shadow-2xl transition-all duration-300 transform",
+          {
+            "translate-x-full": !isOpen,
+          }
+        )}
+      >
         {/* todo: efecto slide */}
         <IoCloseOutline
           size={45}
           className="absolute top-5 right-5 cursor-pointer"
-          onClick={() => console.log("clic")}
+          onClick={() => changeIsOpen()}
         />
 
         {/* Input de busqueda */}

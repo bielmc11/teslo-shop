@@ -1,9 +1,12 @@
+'use client';
 import { titleFont } from "@/config/fonts";
+import { useStore } from "@/store";
 import Link from "next/link";
 import React from "react";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 
 export const TopMenu = () => {
+  const changeIsOpen = useStore((state) => state.changeIsOpen)
   return (
     <nav className="flex px-5 justify-between items-center w-full h-16 bg-gray-100">
       {/* logo */}
@@ -58,7 +61,10 @@ export const TopMenu = () => {
           </div>
         </Link>
 
-        <button className="p-2 rounded-md transition-all hover:bg-gray-300">
+        <button 
+          className="p-2 rounded-md transition-all hover:bg-gray-300"
+          onClick={() => changeIsOpen()}
+        >
           Menu
         </button>
       </div>
