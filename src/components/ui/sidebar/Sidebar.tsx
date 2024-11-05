@@ -1,5 +1,5 @@
 "use client";
-import { useStore } from "@/store";
+import { uiSideBar } from "@/store";
 import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
@@ -15,10 +15,10 @@ import {
 } from "react-icons/io5";
 
 export const Sidebar = () => {
-  const isOpen = useStore((state) => state.isOpen);
-  const changeIsOpen = useStore((state) => state.changeIsOpen);
+  const isOpen = uiSideBar((state) => state.isOpen);
+  const changeIsOpen = uiSideBar((state) => state.changeIsOpen);
   return (
-    <div >
+    <div className="">
       {/* bacground black */}
       {isOpen && (
         <div className="fixed top-0 left-0 w-screen h-screen z-10 bg-black opacity-30"></div>
@@ -58,7 +58,7 @@ export const Sidebar = () => {
           />
         </div>
 
-        {/* Manu */}
+        {/* Menu */}
 
         <Link
           href={"/"}

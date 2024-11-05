@@ -1,14 +1,14 @@
 'use client';
 import { titleFont } from "@/config/fonts";
-import { useStore } from "@/store";
+import { uiSideBar } from "@/store";
 import Link from "next/link";
 import React from "react";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 
 export const TopMenu = () => {
-  const changeIsOpen = useStore((state) => state.changeIsOpen)
+  const changeIsOpen = uiSideBar((state) => state.changeIsOpen)
   return (
-    <nav className="flex px-5 justify-between items-center w-full h-16 bg-gray-100">
+    <nav className="flex px-5 justify-between items-center w-full h-16 bg-gray-100 ">
       {/* logo */}
       <div>
         <Link href="/">
@@ -33,7 +33,7 @@ export const TopMenu = () => {
           Mujeres
         </Link>
         <Link
-          href={"/category/kids"}
+          href={"/category/kid"}
           className="m-2 p-2 rounded-md transition-all hover:bg-gray-300"
         >
           Niños

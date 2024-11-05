@@ -12,12 +12,10 @@ export const ProductGridItem = ({ product }: Props) => {
     const [first,setFirst] = useState(product.images[0])
 
     const onMouseOver = () => {
-        console.log('encimaaaaaaaaaa')
         setFirst(product.images[1])
     }
     
     const onMouserOut = () => {
-        console.log('saliiiiiiiiiiiiii')
         setFirst(product.images[0])
     }
 

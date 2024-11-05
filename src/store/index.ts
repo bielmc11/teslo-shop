@@ -6,8 +6,9 @@ interface BearState {
   
   }
   
-export const useStore = create<BearState>((set) => ({
+ export const uiSideBar = create<BearState>((set) => ({
   isOpen: false,
   changeIsOpen: () => set((state) => ({ isOpen: !state.isOpen  })),
   
 }))
+ 

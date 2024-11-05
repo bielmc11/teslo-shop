@@ -24,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="changeScroll">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-no-repeat min-h-screen bg-fixed`} /* IGUAL ESTO DE BG FIXED HAY QUE QUITARLO */
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-no-repeat min-h-screen bg-fixed `} /* IGUAL ESTO DE BG FIXED HAY QUE QUITARLO */
       >
         {children}
       </body>
