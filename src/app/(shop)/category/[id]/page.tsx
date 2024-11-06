@@ -34,7 +34,7 @@ export default async function CategoryPage({ params }: Props) {
     <div>
       <Title
         title={`Articulos de ${label[id]}`}
-        subtitle="Todos los productos"
+        subtitle={`Todos los productos ${label[id]} `}
       />
       <ProductGrid products={products} />
     </div>
