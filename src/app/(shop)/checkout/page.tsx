@@ -1,8 +1,7 @@
-import { QuantitySelector, Title } from "@/components/inedx";
+import { Title } from "@/components/inedx";
 import { initialData } from "@/seed/seed";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 //POR AHORA HASTA QUE MIREMOS COOKIES
 const productsInCart = [
@@ -10,22 +9,18 @@ const productsInCart = [
   /* initialData.products[1],
   initialData.products[2], */
 ];
-
-export default function AdminPage() {
-  if (productsInCart.length <= 0) {
-    redirect("/empty");
-  }
+export default function NamePage() {
   return (
     <div className="flex justify-center items-center mb-72 px-4 sm:px-0 ">
       <div className="flex flex-col w-[1000px] ">
-        <Title title="Carrito" />
+        <Title title="Verificar orden" />
 
         <div className="grid grid-col-1 sm:grid-cols-2 gap-10">
           {/* CARRITO */}
           <div className="flex flex-col ">
-            <span className="text-xl">Agregar más itemms</span>
-            <Link className="underline mb-5" href="/">
-              Continúa comprando
+            <span className="text-xl">Ajustar elementos</span>
+            <Link className="underline mb-5" href="/cart">
+              Editar carrito
             </Link>
 
             {/* items del carrito */}
@@ -42,19 +37,32 @@ export default function AdminPage() {
 
                 <div>
                   <p>{product.title}</p>
-                  <p>${product.price}</p>
-                  <QuantitySelector quantity={1} />{" "}
-                  {/* POR AHORA TRES HASTA QUE MIREMOS COOKIES */}
-                  <button className="underline mt-3">Eliminar</button>
+                  <p>${product.price} x 3</p>
+                  {/* FALTA LEER DE COOKIES CANTIDFAD */}
+                  <p className="font-bold">Subtotal: {product.price * 3}</p>
+                  {/* FALTA LEER DE COOKIES CANTIDFAD */}
                 </div>
               </div>
             ))}
           </div>
 
           {/* Checkout - Resumen de orden */}
-          <div className="bg-white rounded-xl shadow-xl p-2 sm:p-7 h-fit">
+          <div className="bg-white rounded-xl shadow-xl p-2 sm:p-7">
+            <h2 className="text-2xlmb-2">Direaccion de entrega</h2>
+            {/* FALAT SABER LA DIRECCION */}
+            <div className="mb-5">
+              <p className="font-bold">Fernando Herrera</p>
+              <p>Av inventada</p>
+              <p>Barcelona</p>
+              <p>cataluña</p>
+              <p>64343432425</p>
+            </div>
+
+            {/* divider */}
+            <div className="w-full h-0.5 bg-gray-300 mb-5 rounded"></div>
+
             <h2 className="text-2xl mb-2">Resumen de pedido</h2>
-            <div className="grid grid-cols-2">
+            <div className="grid grid-cols-2 mb-4">
               <span>No. Productos</span>
               <span className="text-right">3 Articulos</span>
               {/* Hasta que lea cookies */}
@@ -72,12 +80,20 @@ export default function AdminPage() {
               {/* Hasta que lea cookies */}
             </div>
 
+            <span>
+              al haz click en &quot;Confirmar pedido&quot; aceptas nuestos{" "}
+              <a href="#" className="underline">
+                términos y condiciones
+              </a>
+                deprivacidad 
+            </span>
+
             <div className="mt-5 w-full flex justify-center mb-2">
               <Link
                 className="btn-primary w-full text-center"
-                href={"/checkout/adress"}
+                href={"/orders/123"}
               >
-                Chechout
+                Confirmar pedido {/* TODO AQUI SE ENVIA A LA BD */}
               </Link>
             </div>
           </div>
