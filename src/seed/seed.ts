@@ -1,18 +1,18 @@
 interface SeedProduct {
+    title: string;
     description: string;
-    images: string[];
     inStock: number;
     price: number;
     sizes: ValidSizes[];
     slug: string;
     tags: string[];
-    title: string;
-    type: ValidTypes;
     gender: 'men'|'women'|'kid'|'unisex'
+    images: string[];
+    type: ValidTypes;
 }
 
 type ValidSizes = 'XS'|'S'|'M'|'L'|'XL'|'XXL'|'XXXL';
-type ValidTypes = 'shirts'|'pants'|'hoodies'|'hats';
+export type  ValidTypes = 'shirts'|'pants'|'hoodies'|'hats';
 
 interface SeedData {
     categories: ValidTypes[]
