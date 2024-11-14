@@ -1,5 +1,7 @@
+import { redirect } from "next/navigation";
 import { getPaginatedProductsWithImages } from "@/actions/product/product-pagination";
 import { ProductGrid, Title } from "@/components/inedx";
+import { ProductPagination } from "@/components/pagination/ProductPagiantion";
 //import { initialData } from "@/seed/seed";
 
 //const products = initialData.products
@@ -12,14 +14,20 @@ interface Props {
 export default async function Home({ searchParams }: Props) {
   const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
-  const { products } = await getPaginatedProductsWithImages({ page });
+  const { products, totalPages, currentPage } =
+    await getPaginatedProductsWithImages({ page });
 
-  console.log("mis productos son: ", products[0]);
+  if (products.length === 0) {
+    redirect("/");
+  }
 
   return (
     <div>
       <Title title="tienda" subtitle="Todos los productos" classname="mb-2" />
       <ProductGrid products={products} />
+      <div className="flex justify-center gap-2 mb-20">
+        <ProductPagination page={page} totalPages={totalPages} />
+      </div>
     </div>
   );
 }

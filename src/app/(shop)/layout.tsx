@@ -1,4 +1,5 @@
 import {  Footer, Sidebar, TopMenu } from "@/components/inedx";
+import { revalidatePath } from "next/cache";
 
 export default function ShopLayout({
   children,

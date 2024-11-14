@@ -2,16 +2,20 @@
 import { titleFont } from "@/config/fonts";
 import { uiSideBar } from "@/store";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 
+
+
 export const TopMenu = () => {
+  const router = useRouter()
   const changeIsOpen = uiSideBar((state) => state.changeIsOpen)
   return (
     <nav className="flex px-5 justify-between items-center w-full h-16 bg-gray-100 ">
       {/* logo */}
       <div>
-        <Link href="/">
+        <Link href="/?page=1">
           <span className={`${titleFont.className} antialiased font-bold`}>
             TESLO
           </span>
