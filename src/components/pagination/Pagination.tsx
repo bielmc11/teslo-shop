@@ -12,23 +12,34 @@ interface Props {
 export const MyPagination = ({ totalPages, page }: Props) => {
   const pathName = usePathname()
   const searchParams = useSearchParams()
-  const currentPage = Number(searchParams.get('page')) ?? 1
+  //const currentPage = Number(searchParams.get('page')) ?? 1
+  const pageString = searchParams.get('page') ?? 1
+  
+  const preCurrentPage = isNaN(Number(pageString))
+    ? 1
+    : Number(pageString)
 
+  const currentPage = preCurrentPage <= 0 ? 1 : preCurrentPage
+  console.log(currentPage)
+  
+  
   const arrayPages = generatePagination(currentPage, totalPages)
+
+  
 
   const createPageUrl = (pageNumber : number | string ) => {
     const params = new URLSearchParams( searchParams )
     
     if(pageNumber === '...'){
-      return `${pathName}?${params.toString()}` //no hace nada
+      return `${pathName}?${params.toString()}` //no hace nada te lleva a la misma url
     }
 
     if(Number(pageNumber) === 0){
-      return `${pathName}` //te lleva a la primera o rasa
+      return `${pathName}` //te lleva a la primera o rasa (/)
     }
 
     if(Number(pageNumber) > totalPages){
-      return `${pathName}?${params.toString()}` //te lleva a la ultima
+      return `${pathName}?${params.toString()}` //no hace nada te lleva a la misma url
     }
 
     params.set('page', pageNumber.toString())
@@ -57,7 +68,7 @@ export const MyPagination = ({ totalPages, page }: Props) => {
               >
                 <Link href={createPageUrl(pagNum)} 
                 className={clsx(
-                  "page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300  text-gray-800 hover:text-gray-800  focus:shadow-none",
+                  "page-link relative block py-1.5 px-3 rounded border-0  outline-none transition-all duration-300  text-gray-800 hover:text-gray-800  focus:shadow-none",
                   {
                     "bg-blue-500 hover:bg-blue-400 text-white" : currentPage === pagNum,
                     "hover:bg-gray-200" : currentPage !== pagNum,

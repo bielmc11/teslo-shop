@@ -8,7 +8,7 @@ interface SeedProduct {
     tags: string[];
     gender: 'men'|'women'|'kid'|'unisex'
     images: string[];
-    //type: ValidTypes;
+    type: ValidTypes;
 }
 
 type ValidSizes = 'XS'|'S'|'M'|'L'|'XL'|'XXL'|'XXXL';
