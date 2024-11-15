@@ -3,6 +3,7 @@ import Link from "next/link"
 import clsx from "clsx";
 import {  usePathname, useSearchParams } from "next/navigation";
 import { IoChevronBackOutline, IoChevronForwardOutline, } from "react-icons/io5";
+import { generatePagination } from "@/utils";
 
 interface Props {
   page: number;
@@ -13,7 +14,7 @@ export const MyPagination = ({ totalPages, page }: Props) => {
   const searchParams = useSearchParams()
   const currentPage = Number(searchParams.get('page')) ?? 1
 
-  const miArray = Array.from({length: totalPages}, (_, i) => i+ 1)
+  const arrayPages = generatePagination(currentPage, totalPages)
 
   const createPageUrl = (pageNumber : number | string ) => {
     const params = new URLSearchParams( searchParams )
@@ -49,17 +50,21 @@ export const MyPagination = ({ totalPages, page }: Props) => {
                 <IoChevronBackOutline size={24} />
               </Link>
             </li>
-            {miArray.map((pagNum) => (
+            {arrayPages.map((pagNum) => (
               <li
-                //onClick={() => changePage(pagNum)}
                 key={pagNum}
-                className={clsx("rounded", {
-                  "bg-blue-400 text-white": currentPage === pagNum,
-                })}
+                className="rounded"
               >
-                <a className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300  text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none">
+                <Link href={createPageUrl(pagNum)} 
+                className={clsx(
+                  "page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300  text-gray-800 hover:text-gray-800  focus:shadow-none",
+                  {
+                    "bg-blue-500 hover:bg-blue-400 text-white" : currentPage === pagNum,
+                    "hover:bg-gray-200" : currentPage !== pagNum,
+                  }
+                )}>
                   {pagNum}
-                </a>
+                </Link>
               </li>
             ))}
 

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getPaginatedProductsWithImages } from "@/actions/product/product-pagination";
 import { ProductGrid, Title } from "@/components/inedx";
 import { ProductPagination } from "@/components/pagination/ProductPagiantion";
+import { MyPagination } from "@/components/pagination/Pagination";
 //import { initialData } from "@/seed/seed";
 
 //const products = initialData.products
@@ -26,7 +27,8 @@ export default async function Home({ searchParams }: Props) {
       <Title title="tienda" subtitle="Todos los productos" classname="mb-2" />
       <ProductGrid products={products} />
       <div className="flex justify-center gap-2 mb-20">
-        <ProductPagination page={page} totalPages={totalPages} />
+        {/* <ProductPagination page={page} totalPages={totalPages} /> */}
+        <MyPagination page={currentPage} totalPages={totalPages} />
       </div>
     </div>
   );
