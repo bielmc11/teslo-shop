@@ -2,16 +2,19 @@
 
 import prisma from "@/lib/prisma";
 
+import {Gender} from '@prisma/client'
 //Aqui haré server accions, recuerda que se puede hacer lo mimso haciendo endPoints y lueg en vez de server accions las funciiones que lo llamen como se hace tradicionalmente
 
 interface PaginationOptions {
   take?: number;
   page?: number;
+  gender?: Gender
 }
 
 export const getPaginatedProductsWithImages = async ({
   page = 1,
   take = 10,
+  gender 
 }: PaginationOptions) => {
   if (isNaN(Number(page))) page = 1;
   if (page < 1) page = 1;
@@ -32,10 +35,18 @@ export const getPaginatedProductsWithImages = async ({
           },
         },
       },
+      //Por genero
+      where: {
+        gender: gender
+      }
     });
 
     //2- Paginas totales:
-    const totalProducts = await prisma.product.count();
+    const totalProducts = await prisma.product.count({
+      where: {
+        gender: gender
+      }
+    });
     const totalPages = Math.ceil(totalProducts / take)
 
 
