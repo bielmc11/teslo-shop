@@ -1,9 +1,11 @@
+export const revalidate = 60;
+
 import { getPaginatedProductsWithImages } from "@/actions";
 import { ProductGrid, Title } from "@/components/inedx";
 import { categories } from "@/interfaces/product.interface";
 import { initialData } from "@/seed/seed";
 import { notFound, redirect } from "next/navigation";
-import {Gender} from '@prisma/client'
+import { Gender } from "@prisma/client";
 import { MyPagination } from "@/components/pagination/Pagination";
 
 interface Props {
@@ -24,19 +26,14 @@ interface Props {
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { gender } = await params;
 
-  const prePagepage = await searchParams?.page 
+  const prePagepage = await searchParams?.page;
 
   const page = prePagepage ? parseInt(prePagepage) : 1;
 
-  console.log('mi page es ahora', page)
-
-
   //const products = getProductsByCategory(gender);
 
-
-  const {products, totalPages, currentPage} = await getPaginatedProductsWithImages({page, gender})
-
-
+  const { products, totalPages, currentPage } =
+    await getPaginatedProductsWithImages({ page, gender });
 
   const label: Record<string, string> = {
     men: "para Hombre",
@@ -49,8 +46,9 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   if (gender !== "men" && gender !== "women" && gender !== "kid") {
     return notFound();
   }
-  if(products.length === 0){
-    return redirect(`/gender/${gender}`)
+
+  if (products.length === 0) {
+    return redirect(`/gender/${gender}`);
   }
   return (
     <div>
@@ -58,17 +56,17 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         title={`Articulos de ${label[gender]}`}
         subtitle={`Todos los productos ${label[gender]} `}
       />
-      
-       <ProductGrid products={products} /> 
-      <MyPagination totalPages={totalPages} page={page}/>
+
+      <ProductGrid products={products} />
+      <MyPagination totalPages={totalPages} page={page} />
     </div>
   );
 }
 
 //TODO:
-  // 0. Cambiar category/[id] gender/[gender] ====> y todos los params que dependen de este
+// 0. Cambiar category/[id] gender/[gender] ====> y todos los params que dependen de este
 
-  // 1. TRAER LOS PRRODUCTOS DE UNA ACCTIONS
+// 1. TRAER LOS PRRODUCTOS DE UNA ACCTIONS
 
-  // 2. HACER PAGINATION
-    //2.1 MANDAR A FUNCION DE UTILS generationpagination
+// 2. HACER PAGINATION
+//2.1 MANDAR A FUNCION DE UTILS generationpagination
