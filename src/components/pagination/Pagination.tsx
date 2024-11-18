@@ -20,13 +20,10 @@ export const MyPagination = ({ totalPages, page }: Props) => {
     : Number(pageString)
 
   const currentPage = preCurrentPage <= 0 ? 1 : preCurrentPage
-  console.log(currentPage)
-  
   
   const arrayPages = generatePagination(currentPage, totalPages)
 
   
-
   const createPageUrl = (pageNumber : number | string ) => {
     const params = new URLSearchParams( searchParams )
     

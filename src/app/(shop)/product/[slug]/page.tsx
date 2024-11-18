@@ -1,3 +1,6 @@
+export const revalidate = 604800
+
+import { getProductBySlug } from "@/actions";
 import {
   ProductMovileSlideShow,
   ProductSlideShow,
@@ -13,10 +16,12 @@ interface Props {
     slug: string;
   };
 }
-export default function PriductPage({ params }: Props) {
+export default async function PriductPage({ params }: Props) {
   //TODO AQUI TAMBIEN CREO QUE DEBERIA hacer un getstatic params?? vara revalidar y hacer catch????
   const { slug } = params;
-  const product = initialData.products.find((product) => product.slug === slug);
+  //const product = initialData.products.find((product) => product.slug === slug);
+
+  const product = await getProductBySlug(slug)
 
   if (!product) {
     notFound();
@@ -24,6 +29,7 @@ export default function PriductPage({ params }: Props) {
 
   return (
     <div className="mt-5 mb-20 grid grid-cols-1 md:grid-cols-3 gap-3">
+
       {/* Mobile SLIDESHOW */}
       <div className="col-span-1 md:col-span-2">
         <ProductMovileSlideShow title={product.title} images={product.images} className="block md:hidden" />
