@@ -6,6 +6,7 @@ import {
   ProductSlideShow,
   QuantitySelector,
   SizeSelector,
+  StockLabel,
 } from "@/components/inedx";
 import { titleFont } from "@/config/fonts";
 import { initialData } from "@/seed/seed";
@@ -41,11 +42,13 @@ export default async function PriductPage({ params }: Props) {
 
       {/* Detalles */}
       <div className="col-span-1 px-5 ">
+        
+        <StockLabel slug={product.slug} />
+        
         <h1 className={`${titleFont.className} antialiased font-bold text-xl`}>
-          {" "}
           {product.title}
         </h1>
-        <p className="text-lg mb-5">{product.price}</p>
+        <p className="text-lg mb-5">${product.price}</p>
 
         {/* selector de tallas */}
         <SizeSelector selectedSize="M" availableSizes={product.sizes} />
