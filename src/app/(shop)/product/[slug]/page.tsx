@@ -9,7 +9,6 @@ import {
   StockLabel,
 } from "@/components/inedx";
 import { titleFont } from "@/config/fonts";
-import { initialData } from "@/seed/seed";
 import { notFound } from "next/navigation";
 
 interface Props {
@@ -17,10 +16,27 @@ interface Props {
     slug: string;
   };
 }
+
+export async function generateMetadata ({params}: Props){
+  const { slug } = await params
+
+  const product = await getProductBySlug(slug)
+
+  return {
+    title: product?.title ?? 'Producto no encontrado',
+    description: product?.description ?? 'Producto no encontrado',
+    openGraph: {
+      title: product?.title ?? 'Producto no encontrado',
+      description: product?.description ?? 'Producto no encontrado',
+      images: [`/products7${product?.images[0]}`]
+
+    }
+  }
+}
+
 export default async function PriductPage({ params }: Props) {
   //TODO AQUI TAMBIEN CREO QUE DEBERIA hacer un getstatic params?? vara revalidar y hacer catch????
   const { slug } = params;
-  //const product = initialData.products.find((product) => product.slug === slug);
 
   const product = await getProductBySlug(slug)
 
