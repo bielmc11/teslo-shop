@@ -1,4 +1,4 @@
-export const revalidate = 604800
+export const revalidate = 604800;
 
 import { getProductBySlug } from "@/actions";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@/components/inedx";
 import { titleFont } from "@/config/fonts";
 import { notFound } from "next/navigation";
+import { AddToCart } from "./ui/AddToCart";
 
 interface Props {
   params: {
@@ -17,28 +18,27 @@ interface Props {
   };
 }
 
-export async function generateMetadata ({params}: Props){
-  const { slug } = await params
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params;
 
-  const product = await getProductBySlug(slug)
+  const product = await getProductBySlug(slug);
 
   return {
-    title: product?.title ?? 'Producto no encontrado',
-    description: product?.description ?? 'Producto no encontrado',
+    title: product?.title ?? "Producto no encontrado",
+    description: product?.description ?? "Producto no encontrado",
     openGraph: {
-      title: product?.title ?? 'Producto no encontrado',
-      description: product?.description ?? 'Producto no encontrado',
-      images: [`/products7${product?.images[0]}`]
-
-    }
-  }
+      title: product?.title ?? "Producto no encontrado",
+      description: product?.description ?? "Producto no encontrado",
+      images: [`/products7${product?.images[0]}`],
+    },
+  };
 }
 
 export default async function PriductPage({ params }: Props) {
   //TODO AQUI TAMBIEN CREO QUE DEBERIA hacer un getstatic params?? vara revalidar y hacer catch????
   const { slug } = params;
 
-  const product = await getProductBySlug(slug)
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
@@ -46,35 +46,32 @@ export default async function PriductPage({ params }: Props) {
 
   return (
     <div className="mt-5 mb-20 grid grid-cols-1 md:grid-cols-3 gap-3">
-
       {/* Mobile SLIDESHOW */}
       <div className="col-span-1 md:col-span-2">
-        <ProductMovileSlideShow title={product.title} images={product.images} className="block md:hidden" />
-      {/*Desktop SLIDESHOW */}
-        <ProductSlideShow title={product.title} images={product.images} className="hidden md:block"/>
+        <ProductMovileSlideShow
+          title={product.title}
+          images={product.images}
+          className="block md:hidden"
+        />
+        {/*Desktop SLIDESHOW */}
+        <ProductSlideShow
+          title={product.title}
+          images={product.images}
+          className="hidden md:block"
+        />
       </div>
-
- 
 
       {/* Detalles */}
       <div className="col-span-1 px-5 ">
-        
         <StockLabel slug={product.slug} />
-        
+
         <h1 className={`${titleFont.className} antialiased font-bold text-xl`}>
           {product.title}
         </h1>
         <p className="text-lg mb-5">${product.price}</p>
 
         {/* selector de tallas */}
-        <SizeSelector selectedSize="M" availableSizes={product.sizes} />
-
-        {/* selector de cantidad */}
-        <QuantitySelector quantity={1} />
-
-        {/* BUTTOON */}
-        <button className="btn-primary my-5">Agregar al carrito</button>
-
+        <AddToCart product={product} />
         {/* description */}
         <h3 className="text-sm font-bold">Descrición</h3>
         <p className="font-light">{product.description}</p>

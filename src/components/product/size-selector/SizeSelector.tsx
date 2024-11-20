@@ -1,14 +1,15 @@
+'use client'
 import type { Size } from '@/interfaces/product.interface';
 import clsx from 'clsx';
 import React from 'react'
 
 interface Props {
-  selectedSize: Size;
+  selectedSize?: Size;
   availableSizes: Size[];
+  onChangeSize: (size: Size) => void;
 }
 
-export const SizeSelector = ({selectedSize, availableSizes}: Props) => {
-
+export const SizeSelector = ({selectedSize, availableSizes, onChangeSize}: Props) => {
 
   return (
     <div className='my-5'>
@@ -17,11 +18,12 @@ export const SizeSelector = ({selectedSize, availableSizes}: Props) => {
         {
           availableSizes.map((size) => (
             <button
+              onClick={() => onChangeSize(size)}
               key={size}
               className={clsx(
                 'mx-2 hover:underline text-lg',
                 {
-                'underline': selectedSize === size
+                'underline': size === selectedSize
                 }
               )}
             >
