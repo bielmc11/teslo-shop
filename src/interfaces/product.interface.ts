@@ -19,6 +19,7 @@ export interface CartProduct{
   quantity: number
   price: number
   size: Size
+  image: string
 
 }
 

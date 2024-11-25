@@ -1,6 +1,7 @@
 "use client";
 import { QuantitySelector, SizeSelector } from "@/components/inedx";
-import { Product, Size } from "@/interfaces/product.interface";
+import { CartProduct, Product, Size } from "@/interfaces/product.interface";
+import { useCartStore } from "@/store/cart/cart-store";
 import React, { useState } from "react";
 
 interface Props {
@@ -8,6 +9,9 @@ interface Props {
 }
 
 export const AddToCart = ({ product }: Props) => {
+
+  const addProductToCart = useCartStore((state) => state.addToCart);
+
   const [size, setSize] = useState<Size | undefined>();
   const [quantity, setQuantity] = useState<number>(1);
   const [errorMesage, setErrorMesage] = useState<string | undefined>();
@@ -19,10 +23,25 @@ export const AddToCart = ({ product }: Props) => {
 
   const addToCart = () => {
     if (!size) {setErrorMesage("Selecciona una talla"); return}
+    
+    const cartProduct : CartProduct = {
+      id: product.id,
+      slug: product.slug,
+      title: product.title,
+      quantity: quantity,
+      price: product.price,
+      size: size,
+      image: product.images[0]
+    }
 
-
+    addProductToCart(cartProduct)
+    setSize(undefined)
+    setQuantity(1)
 
   }
+
+ 
+
   return (
     <>
     {
@@ -44,3 +63,6 @@ export const AddToCart = ({ product }: Props) => {
     </>
   );
 };
+
+
+

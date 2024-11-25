@@ -1,16 +1,24 @@
-'use client';
+"use client";
 import { titleFont } from "@/config/fonts";
 import { uiSideBar } from "@/store";
+import { useCartStore } from "@/store/cart/cart-store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 
-
-
 export const TopMenu = () => {
-  const router = useRouter()
-  const changeIsOpen = uiSideBar((state) => state.changeIsOpen)
+  const router = useRouter();
+  const changeIsOpen = uiSideBar((state) => state.changeIsOpen);
+  const totalItemsCart = useCartStore((state) => state.getTotalItems());
+
+  //Para solucionar los errores de hidratacionm
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  },[])
+
   return (
     <nav className="flex px-5 justify-between items-center w-full h-16 bg-gray-100 ">
       {/* logo */}
@@ -55,9 +63,12 @@ export const TopMenu = () => {
 
         <Link href={"/cart"} className="p-1">
           <div className="relative">
-            <span className="absolute -top-3 -right-1 bg-blue-700 text-white font-bold  text-xs px-1 rounded-full">
-              3
-            </span>
+            { loaded && (totalItemsCart > 0) && (
+              <span className="absolute -top-3 -right-1 bg-blue-700 text-white font-bold  text-xs px-1 rounded-full">
+                {totalItemsCart}
+              </span>
+            )}
+
             <IoCartOutline
               className="text-gray-500 hover:text-gray-700 transition-all"
               size={24}
@@ -65,7 +76,7 @@ export const TopMenu = () => {
           </div>
         </Link>
 
-        <button 
+        <button
           className="p-2 rounded-md transition-all hover:bg-gray-300"
           onClick={() => changeIsOpen()}
         >

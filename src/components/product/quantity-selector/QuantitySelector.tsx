@@ -7,13 +7,10 @@ interface Props {
   onChangeQuantity: (value: number) => void;
 }
 
-export const QuantitySelector = ({ quantity, onChangeQuantity}: Props) => {
-  //const [count, setCount] = useState(quantity);
 
-  /* const onQuantityChange = (value: number) => {
-    if(count + value < 1) return
-    setCount((prevCount) => prevCount + value);
-  } */
+export const QuantitySelector = ({ quantity, onChangeQuantity}: Props) => {
+
+
 
   return (
     <div className="flex items-center">
