@@ -4,8 +4,6 @@ import { getProductBySlug } from "@/actions";
 import {
   ProductMovileSlideShow,
   ProductSlideShow,
-  QuantitySelector,
-  SizeSelector,
   StockLabel,
 } from "@/components/inedx";
 import { titleFont } from "@/config/fonts";

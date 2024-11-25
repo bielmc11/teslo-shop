@@ -9,6 +9,7 @@ import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 
 export const TopMenu = () => {
   const router = useRouter();
+
   const changeIsOpen = uiSideBar((state) => state.changeIsOpen);
   const totalItemsCart = useCartStore((state) => state.getTotalItems());
 
