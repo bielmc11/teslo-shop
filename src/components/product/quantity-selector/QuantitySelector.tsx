@@ -7,14 +7,14 @@ interface Props {
   onChangeQuantity: (value: number) => void;
 }
 
-
-export const QuantitySelector = ({ quantity, onChangeQuantity}: Props) => {
-
-
-
+export const QuantitySelector = ({ quantity, onChangeQuantity }: Props) => {
   return (
     <div className="flex items-center">
-      <button onClick={() => {onChangeQuantity(-1)}}>
+      <button
+        onClick={() => {
+          onChangeQuantity(-1);
+        }}
+      >
         <IoRemoveCircleOutline size={30} />
       </button>
 
@@ -22,7 +22,11 @@ export const QuantitySelector = ({ quantity, onChangeQuantity}: Props) => {
         {quantity}
       </span>
 
-      <button onClick={ () => {onChangeQuantity(1)}}>
+      <button
+        onClick={() => {
+          onChangeQuantity(1);
+        }}
+      >
         <IoAddCircleOutline size={30} />
       </button>
     </div>

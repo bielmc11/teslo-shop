@@ -3,7 +3,6 @@ import { useCartStore } from "@/store/cart/cart-store";
 import Image from "next/image";
 import { QuantitySelector } from "@/components/inedx";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import Link from "next/link";
 
