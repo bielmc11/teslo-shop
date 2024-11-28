@@ -19,6 +19,8 @@ const credentialsProvider = Credentials({
 
             if(!pastCredentials.success) throw new Error('Invalid credentials')
 
+                console.log(pastCredentials.success)
+
             const {email, password} = pastCredentials.data
                 
              
