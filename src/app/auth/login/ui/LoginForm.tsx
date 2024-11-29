@@ -1,12 +1,18 @@
 "use client";
 import { authentificate } from "@/actions";
+import clsx from "clsx";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
+import { IoInformationOutline } from "react-icons/io5";
 
 export const LoginForm = () => {
-  const [state, dispatch] = useFormState(authentificate, undefined);
-  console.log({state});
+  const [state, dispatch ] = useFormState(authentificate, undefined);
+
+  //const session = useSession()
+  //console.log('session', session.data)
+
 
   return (
     <form action={dispatch} className="flex flex-col">
@@ -24,7 +30,16 @@ export const LoginForm = () => {
         type="password"
       />
 
-      <button type="submit" className="btn-primary">Ingresar</button>
+      <div className="flex h-8 items-end space-x-1">
+        {state === "CredentialsSignin" && (
+          <div className="mb-2 flex items-center">
+            <IoInformationOutline className="h-5 w-5 text-red-500" />
+            <p className="text-sm text-red-500"> Invalid Credentials </p>
+          </div>
+        )}
+      </div>
+
+      <LoginButton />
 
       {/* divisor l ine */}
       <div className="flex items-center my-5">
@@ -37,5 +52,23 @@ export const LoginForm = () => {
         Crear una nueva cuenta
       </Link>
     </form>
+  );
+};
+
+export const LoginButton = () => {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      aria-disabled={pending}
+      disabled={pending}
+      className={clsx("btn-primary", {
+        "btn-primary": !pending,
+        "btn-disabled": pending,
+      })}
+    >
+      Ingresar
+    </button>
   );
 };
