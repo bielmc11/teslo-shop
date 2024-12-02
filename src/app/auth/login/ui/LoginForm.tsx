@@ -1,17 +1,24 @@
 "use client";
 import { authentificate } from "@/actions";
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { useFormState, useFormStatus } from "react-dom";
 import { IoInformationOutline } from "react-icons/io5";
 
 export const LoginForm = () => {
   const [state, dispatch ] = useFormState(authentificate, undefined);
+  const router = useRouter();
 
   //const session = useSession()
   //console.log('session', session.data)
+
+  console.log('mi estado es:', state)
+
+  if(state === 'success') {
+    router.push('/')
+  }
 
 
   return (

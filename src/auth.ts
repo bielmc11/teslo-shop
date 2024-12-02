@@ -1,8 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import prisma from "./lib/prisma";
 import bcryptjs from "bcryptjs";
+import { AdapterUser } from "next-auth/adapters";
 
 const credentialsProvider = Credentials({
   credentials: {
@@ -41,13 +42,11 @@ const credentialsProvider = Credentials({
       );
       if (!isPasswordCorrect) return null;
 
-      
-      const { password:_, ...rest } = user
-      
-      console.log({...rest})
+      const { password: _, ...rest } = user;
 
-      return {...rest};
+      console.log({ ...rest });
 
+      return { ...rest };
     } catch (error) {
       return null;
     }
@@ -59,5 +58,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/auth/login",
     newUser: "/auth/new-account",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.data = user;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      console.log("token", token);
+      if (token) {
+        session.user.role = token.data.role;
+      }
+      console.log("session", session);
+      return session;
+    },
   },
 });

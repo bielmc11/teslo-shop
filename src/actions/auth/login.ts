@@ -12,10 +12,18 @@ export async function authentificate(
   try {
     //await sleep(2000);
     const { email, password } = Object.fromEntries(formData);
-
-    await signIn("credentials", { email, password });
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    
+    return 'success';
 
   } catch (error) {
-    return "CredentialsSignin";
+
+    if((error as any).type === 'CredentialsSignin') return 'CredentialsSignin';
+     
+    return "error desconocido ";
   }
 }
