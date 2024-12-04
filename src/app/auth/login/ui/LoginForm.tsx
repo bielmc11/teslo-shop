@@ -8,18 +8,17 @@ import { useFormState, useFormStatus } from "react-dom";
 import { IoInformationOutline } from "react-icons/io5";
 
 export const LoginForm = () => {
-  const [state, dispatch ] = useFormState(authentificate, undefined);
+  const [state, dispatch] = useFormState(authentificate, undefined);
   const router = useRouter();
 
   //const session = useSession()
   //console.log('session', session.data)
 
-  console.log('mi estado es:')
+  console.log("mi estado es:");
 
-  if(state === 'success') {
-    router.push('/')
+  if (state === "success") {
+    router.push("/");
   }
-
 
   return (
     <form action={dispatch} className="flex flex-col">

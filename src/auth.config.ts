@@ -1,4 +1,4 @@
-/* import NextAuth from "next-auth";
+import { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import prisma from "./lib/prisma";
@@ -43,7 +43,6 @@ const credentialsProvider = Credentials({
 
       const { password: _, ...rest } = user;
 
-      console.log({ ...rest });
 
       return { ...rest };
     } catch (error) {
@@ -52,15 +51,21 @@ const credentialsProvider = Credentials({
   },
 });
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const authConfig = {
   providers: [credentialsProvider],
   pages: {
     signIn: "/auth/login",
     newUser: "/auth/new-account",
   },
   callbacks: {
-    async authorized({ auth, request: {nextUrl} }) {
-      console.log('dentro de mi middleware:', auth);
+    async authorized({ auth, request: { nextUrl } }) {
+      const isLogged = !!auth?.user;
+      const isOnCheckout = nextUrl.pathname.startsWith("/checkout");
+
+      console.log("isLogged", isLogged);
+      console.log("isOnCheckout", isOnCheckout);
+
+      if (isOnCheckout && !isLogged) return false;
 
       return true;
     },
@@ -71,20 +76,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      console.log("token", token);
       if (token) {
         session.user.role = token.data.role;
       }
-      console.log("session", session);
       return session;
     },
   },
-});
- */
-
-import NextAuth from "next-auth";
-import { authConfig } from "./auth.config";
-
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  ...authConfig
-})
+} satisfies NextAuthConfig;
