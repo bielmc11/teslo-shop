@@ -27,3 +27,19 @@ export async function authentificate(
     return "error desconocido ";
   }
 }
+
+
+export async function login (email: string, password: string) {
+  try{
+    await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    })
+    return 'success';
+
+  }catch(error){
+    if((error as any).type === 'CredentialsSignin') return 'CredentialsSignin';
+    return "error desconocido ";
+  }
+}

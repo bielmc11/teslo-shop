@@ -14,7 +14,7 @@ export const LoginForm = () => {
   //const session = useSession()
   //console.log('session', session.data)
 
-  console.log('mi estado es:', state)
+  console.log('mi estado es:')
 
   if(state === 'success') {
     router.push('/')

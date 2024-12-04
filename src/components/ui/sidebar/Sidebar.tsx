@@ -69,6 +69,7 @@ export const Sidebar = () => {
           <Link
             href={"/auth/login"}
             className="flex items-center gap-2 mt-10 p-2 rounded hover:bg-gray-100 translate-all"
+            onClick={() => changeIsOpen()}
           >
             <IoLogInOutline size={20} />
             <span className="text-xl">Ingresar</span>
@@ -80,6 +81,7 @@ export const Sidebar = () => {
             <Link
               href={"/profile"}
               className="flex items-center gap-2 mt-10 p-2 rounded hover:bg-gray-100 translate-all"
+              onClick={() => changeIsOpen()}
             >
               <IoPersonOutline size={20} />
               <span className="text-xl">Perfil</span>
@@ -88,6 +90,7 @@ export const Sidebar = () => {
             <Link
               href={"/"}
               className="flex items-center gap-2 mt-10 p-2 rounded hover:bg-gray-100 translate-all"
+              onClick={() => changeIsOpen()}
             >
               <IoTicketOutline size={20} />
               <span className="text-xl">Ordenes</span>
