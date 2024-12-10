@@ -1,4 +1,5 @@
 "use client";
+import { Countries } from "@/interfaces/product.interface";
 import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
@@ -15,16 +16,20 @@ type FormInput = {
   phone: string;
   rememberAdress: boolean;
 };
-
-export const AddressForm = () => {
+interface Props {
+  countries: Countries[];
+}
+export const AddressForm = ({countries}: Props) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<FormInput>({
     //TODO: Pillar de la BD esto
-    //defaultValues:  
+    //defaultValues:
   });
+
+  //TODO: LLamar a la BD para que recupere los paises y los ponga como options en mi select
 
   const onSubmit = (data: FormInput) => {
     console.log(data);
@@ -96,7 +101,11 @@ export const AddressForm = () => {
           className="p-2 border rounded-md bg-gray-200"
         >
           <option value="">[ Seleccione ]</option>
-          <option value="CRI">Costa Rica</option>
+          {
+            countries.map((country) => {
+              return <option key={country.id} value={country.id} >{country.name}</option>
+            })
+          }
         </select>
       </div>
 
@@ -144,12 +153,12 @@ export const AddressForm = () => {
 
         <button
           className={clsx(
-            {"btn-primary flex w-full sm:w-1/2 justify-center ": isValid},
-            {"btn-disabled flex w-full sm:w-1/2 justify-center ": !isValid}
+            { "btn-primary flex w-full sm:w-1/2 justify-center ": isValid },
+            { "btn-disabled flex w-full sm:w-1/2 justify-center ": !isValid }
           )}
           type="submit"
           disabled={!isValid}
-          >
+        >
           Enviar por ahora
         </button>
 

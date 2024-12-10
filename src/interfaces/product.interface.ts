@@ -23,6 +23,12 @@ export interface CartProduct{
 
 }
 
+export interface Countries {
+  id: string;
+  name: string;
+}
+
+
 export type Size = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
 export type ValidType = "shirts" | "pants" | "hoodies" | "hats";
 export type categories = "men" | "women" | "kid" | "unisex";
