@@ -87,15 +87,7 @@ model User {
 }
 
 model Country {
-  id String @id @default(uuid())
+  id String @id 
   name String
-
-  adresses Adress[]
 }
 
-model Adress {
-  id String @id @default(uuid())
-
-  country Country @relation(fields: [countryId], references: [id])
-  countryId String
-}
