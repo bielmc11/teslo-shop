@@ -1,5 +1,6 @@
 "use client";
 import { deleteUserAddress, setUserAddress } from "@/actions/address/set-user-address";
+import { Address } from "@/interfaces/address";
 import { Countries } from "@/interfaces/product.interface";
 import { useAddressStore } from "@/store/address/address-store";
 import clsx from "clsx";
@@ -10,7 +11,7 @@ type FormInput = {
   firstName: string;
   lastName: string;
   address: string;
-  address2?: string;
+  address2?: string ;
   postalCode: string;
   city: string;
   country: string;
@@ -20,8 +21,9 @@ type FormInput = {
 interface Props {
   countries: Countries[];
   userId?: string;
+  addressStored?: Partial<Address> 
 }
-export const AddressForm = ({ countries, userId }: Props) => {
+export const AddressForm = ({ countries, userId, addressStored = {} }: Props) => {
   const setAddress = useAddressStore((state) => state.setAddress);
   const address = useAddressStore((state) => state.address);
 
@@ -31,8 +33,11 @@ export const AddressForm = ({ countries, userId }: Props) => {
     formState: { errors, isValid },
     reset,
   } = useForm<FormInput>({
-    //TODO: Pillar de la BD esto
-    //defaultValues:
+    defaultValues: {
+      ...addressStored,
+      firstName: addressStored.firstName,
+      rememberAdress: true
+    }
   });
 
   const onSubmit = async (data: FormInput) => {
@@ -41,21 +46,23 @@ export const AddressForm = ({ countries, userId }: Props) => {
 
     const {rememberAdress, ...rest} = data
 
-    if(data.rememberAdress){
+    if(rememberAdress){
       const res = await setUserAddress(userId as string, rest)
     }
 
     if(!data.rememberAdress){ //AQui debo eliminar la direccion
       const res = await deleteUserAddress(userId as string)
-      console.log(res)
     }
   };
 
   useEffect(() => {
-    console.log("aqui el addres:", address);
-    console.log("el mismisimo id es:", userId);
-    reset(address);
-  }, [address]);
+    console.log("aqui el addres stored ahora ess: :", addressStored);
+    //ESTE RESET AHCE QUE SE QUITE EL DEFAULT VALUE
+    if(!addressStored.firstName){
+      console.log('dentro hay info de bd')
+      reset(address);
+    }
+  }, [address.firstName]);
 
  
   return (
