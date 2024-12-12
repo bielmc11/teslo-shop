@@ -54,41 +54,60 @@ const createOrReplaceUserAddress = async (userId: string, address: Address) => {
 
     //3-) Si existe, actualizo
     const updatedAddress = await prisma.userAddress.update({
-        where: {
-            userId,
-        },
-        data: AddressToSave,
-    })
-    return{
-        updatedAddress,
-    }
-
-
+      where: {
+        userId,
+      },
+      data: AddressToSave,
+    });
+    return {
+      updatedAddress,
+    };
   } catch (error) {
     console.log(error);
     throw new Error("No se pudo guardar la direccion");
   }
 };
 
-
-
 export const deleteUserAddress = async (userId: string) => {
-  try{
+  try {
     const res = await prisma.userAddress.delete({
       where: {
-        userId
-      }
-    })
-    return{
+        userId,
+      },
+    });
+    return {
       ok: true,
-      message: "Se elimino la direccion"
+      message: "Se elimino la direccion",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      ok: false,
+      message: "No se pudo eliminar la direccion",
+    };
+  }
+};
+
+export const getUserAddress = async (userId: string) => {
+  try {
+    const address = await prisma.userAddress.findUnique({
+      where: {
+        userId,
+      },
+    });
+
+    if(!address){
+      return null
     }
 
-  }catch(error){
-    console.log(error)
-    return{
-      ok: false,
-      message: "No se pudo eliminar la direccion"
-    }
+    const { countryId, ...rest } = address
+
+    return {
+      ...rest,
+      country: countryId
+    };
+  } catch (error) {
+    console.log(error);
+    return null;
   }
-}
+};
