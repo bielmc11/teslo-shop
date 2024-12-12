@@ -43,7 +43,6 @@ const credentialsProvider = Credentials({
 
       const { password: _, ...rest } = user;
 
-
       return { ...rest };
     } catch (error) {
       return null;
@@ -78,6 +77,7 @@ export const authConfig = {
     async session({ session, token }) {
       if (token) {
         session.user.role = token.data.role;
+        session.user.userId = token.data.id;
       }
       return session;
     },

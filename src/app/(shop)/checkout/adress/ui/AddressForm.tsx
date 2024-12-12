@@ -1,13 +1,14 @@
 "use client";
+import { deleteUserAddress, setUserAddress } from "@/actions/address/set-user-address";
 import { Countries } from "@/interfaces/product.interface";
+import { useAddressStore } from "@/store/address/address-store";
 import clsx from "clsx";
-import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type FormInput = {
-  name: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   address: string;
   address2?: string;
   postalCode: string;
@@ -18,23 +19,45 @@ type FormInput = {
 };
 interface Props {
   countries: Countries[];
+  userId?: string;
 }
-export const AddressForm = ({countries}: Props) => {
+export const AddressForm = ({ countries, userId }: Props) => {
+  const setAddress = useAddressStore((state) => state.setAddress);
+  const address = useAddressStore((state) => state.address);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    reset,
   } = useForm<FormInput>({
     //TODO: Pillar de la BD esto
     //defaultValues:
   });
 
-  //TODO: LLamar a la BD para que recupere los paises y los ponga como options en mi select
-
-  const onSubmit = (data: FormInput) => {
+  const onSubmit = async (data: FormInput) => {
     console.log(data);
+    setAddress(data);
+
+    const {rememberAdress, ...rest} = data
+
+    if(data.rememberAdress){
+      const res = await setUserAddress(userId as string, rest)
+    }
+
+    if(!data.rememberAdress){ //AQui debo eliminar la direccion
+      const res = await deleteUserAddress(userId as string)
+      console.log(res)
+    }
   };
 
+  useEffect(() => {
+    console.log("aqui el addres:", address);
+    console.log("el mismisimo id es:", userId);
+    reset(address);
+  }, [address]);
+
+ 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -43,7 +66,7 @@ export const AddressForm = ({countries}: Props) => {
       <div className="flex flex-col mb-2">
         <span>Nombres</span>
         <input
-          {...register("name", { required: true })}
+          {...register("firstName", { required: true })}
           type="text"
           className="p-2 border rounded-md bg-gray-200"
         />
@@ -54,7 +77,7 @@ export const AddressForm = ({countries}: Props) => {
         <input
           type="text"
           className="p-2 border rounded-md bg-gray-200"
-          {...register("lastname", { required: true })}
+          {...register("lastName", { required: true })}
         />
       </div>
 
@@ -101,11 +124,13 @@ export const AddressForm = ({countries}: Props) => {
           className="p-2 border rounded-md bg-gray-200"
         >
           <option value="">[ Seleccione ]</option>
-          {
-            countries.map((country) => {
-              return <option key={country.id} value={country.id} >{country.name}</option>
-            })
-          }
+          {countries.map((country) => {
+            return (
+              <option key={country.id} value={country.id}>
+                {country.name}
+              </option>
+            );
+          })}
         </select>
       </div>
 
@@ -165,9 +190,9 @@ export const AddressForm = ({countries}: Props) => {
         {/* <Link
           href="/checkout"
           className="btn-primary flex w-full sm:w-1/2 justify-center "
-        >
+          >
           Siguiente
-        </Link> */}
+          </Link> */}
       </div>
     </form>
   );

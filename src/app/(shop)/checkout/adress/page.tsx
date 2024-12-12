@@ -1,12 +1,16 @@
 import { Title } from "@/components/inedx";
-import Link from "next/link";
 import { AddressForm } from "./ui/AddressForm";
 import { getCountries } from "@/actions";
+import { auth } from "@/auth";
 
 
 export  default async function AdressPage() {
 
   const contries = await getCountries()
+  const session = await auth()
+
+  const userId = session?.user.userId
+  
 
 
   return (
@@ -14,7 +18,7 @@ export  default async function AdressPage() {
       <div className="w-full  xl:w-[1000px] flex flex-col justify-center text-left">
         <Title title="Dirección" subtitle="Dirección de entrega" />
 
-        <AddressForm countries={contries} />
+        <AddressForm countries={contries} userId={userId} />
         
       </div>
     </div>
