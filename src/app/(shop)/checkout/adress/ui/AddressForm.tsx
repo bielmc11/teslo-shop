@@ -4,6 +4,7 @@ import { Address } from "@/interfaces/address";
 import { Countries } from "@/interfaces/product.interface";
 import { useAddressStore } from "@/store/address/address-store";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -26,6 +27,7 @@ interface Props {
 export const AddressForm = ({ countries, userId, addressStored = {} }: Props) => {
   const setAddress = useAddressStore((state) => state.setAddress);
   const address = useAddressStore((state) => state.address);
+  const router = useRouter()
 
   const {
     register,
@@ -53,6 +55,8 @@ export const AddressForm = ({ countries, userId, addressStored = {} }: Props) =>
     if(!data.rememberAdress){ //AQui debo eliminar la direccion
       const res = await deleteUserAddress(userId as string)
     }
+
+    router.push("/checkout")
   };
 
   useEffect(() => {

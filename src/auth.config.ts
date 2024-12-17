@@ -60,10 +60,7 @@ export const authConfig = {
     async authorized({ auth, request: { nextUrl } }) {
       const isLogged = !!auth?.user;
       const isOnCheckout = nextUrl.pathname.startsWith("/checkout");
-
-      console.log("isLogged", isLogged);
-      console.log("isOnCheckout", isOnCheckout);
-
+      
       if (isOnCheckout && !isLogged) return false;
 
       return true;

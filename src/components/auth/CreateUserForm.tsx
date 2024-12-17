@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { set } from "zod";
 
 type FormData = {
   email: string;
@@ -25,7 +24,6 @@ export const CreateUserForm = () => {
   const onSubmit = async (data: FormData) => {
     setErrorMessage("");
     const { name, email, password } = data;
-    console.log(data);
 
     //Server acction
     const resp = await newUser(email.toLocaleLowerCase(), name, password);
