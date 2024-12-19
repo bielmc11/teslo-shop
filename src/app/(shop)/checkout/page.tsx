@@ -1,6 +1,7 @@
 import { Title } from "@/components/inedx";
 import Link from "next/link";
 import { ProductsInCart } from "./(checkout)/ui/ProductsInCart";
+import { PlaceOrder } from "./(checkout)/ui/PlaceOrder";
 
 //POR AHORA HASTA QUE MIREMOS COOKIES
 
@@ -25,6 +26,7 @@ export default function NamePage() {
           </div>
 
           {/* Checkout - Resumen de orden */}
+          <PlaceOrder />
           
         </div>
       </div>

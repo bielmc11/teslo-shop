@@ -1,5 +1,3 @@
-import { FaLastfmSquare } from "react-icons/fa";
-import { boolean } from "zod";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

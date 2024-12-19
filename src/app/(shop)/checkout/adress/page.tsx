@@ -3,6 +3,7 @@ import { AddressForm } from "./ui/AddressForm";
 import { getCountries } from "@/actions";
 import { auth } from "@/auth";
 import { getUserAddress } from "@/actions/address/set-user-address";
+import { Address } from "@/interfaces/address";
 
 
 export  default async function AdressPage() {
@@ -16,8 +17,9 @@ export  default async function AdressPage() {
     return <h3 className="text-center text-5xl ">500 - No tienes sesion activa</h3>
   }
 
-  const myAdressStored = await getUserAddress(userId) ?? {}
-  
+  const myAdressStored = await getUserAddress(userId) as any ?? {}
+  const {userId : useeer,...rest } =  myAdressStored
+  console.log('a ver si esto funcionaa, useeer', useeer)
 
   
 
@@ -27,7 +29,7 @@ export  default async function AdressPage() {
       <div className="w-full  xl:w-[1000px] flex flex-col justify-center text-left">
         <Title title="Dirección" subtitle="Dirección de entrega" />
 
-        <AddressForm countries={contries} userId={userId} addressStored={myAdressStored} />
+        <AddressForm countries={contries} userId={userId} addressStored={rest} />
         
       </div>
     </div>
