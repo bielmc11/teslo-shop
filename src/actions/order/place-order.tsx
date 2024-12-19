@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { Address } from "@/interfaces/address";
 import { Size } from "@/interfaces/product.interface";
+import prisma from "@/lib/prisma";
 
 interface ProductToOrder {
   productId: string;
@@ -20,7 +21,6 @@ export const placeOrder = async ({
   const session = await auth();
 
   if (!session?.user) {
-    console.log("no hay sesion retorno error");
     return {
       ok: false,
       error: "No hay sesión iniciada",
@@ -28,9 +28,26 @@ export const placeOrder = async ({
   }
   ;
 
-  //console.log("mi sesion es: ", session.user);
-  //console.log("el produ", productsToOrder);
-  //console.log("la dirección: ", address);
+  //obtener info de los productos,
+  //Nota: puedo llevar 2 o + productos con mimso ID
+  const products = await prisma.product.findMany({
+    where: {
+      id: {
+        in: productsToOrder.map((item => item.productId))
+      }
+    }
+  })
+
+  //Calculo los precios
+  const itemsInOrder = productsToOrder.reduce((acc, item) => {
+    return acc + item.quantity
+  },0)
+
+  console.log(itemsInOrder)
+
+
+
+
 
   console.log( {productsToOrder, address, session } );
   return session.user;

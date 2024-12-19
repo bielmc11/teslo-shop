@@ -3,7 +3,6 @@ import { AddressForm } from "./ui/AddressForm";
 import { getCountries } from "@/actions";
 import { auth } from "@/auth";
 import { getUserAddress } from "@/actions/address/set-user-address";
-import { Address } from "@/interfaces/address";
 
 
 export  default async function AdressPage() {
@@ -18,8 +17,7 @@ export  default async function AdressPage() {
   }
 
   const myAdressStored = await getUserAddress(userId) as any ?? {}
-  const {userId : useeer,...rest } =  myAdressStored
-  console.log('a ver si esto funcionaa, useeer', useeer)
+  const {userId : user,...rest } =  myAdressStored
 
   
 

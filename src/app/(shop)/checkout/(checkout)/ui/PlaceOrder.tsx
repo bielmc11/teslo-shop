@@ -41,7 +41,6 @@ export const PlaceOrder = () => {
       size: item.size,
     }));
 
-    console.log(address)
 
     await placeOrder({ productsToOrder, address });
 

@@ -29,9 +29,6 @@ export const AddressForm = ({ countries, userId, addressStored = {} }: Props) =>
   const address = useAddressStore((state) => state.address);
   const router = useRouter()
 
-  console.log('addressStored', addressStored)
-  console.log('user is  ', userId)
-
   const {
     register,
     handleSubmit,
@@ -47,7 +44,6 @@ export const AddressForm = ({ countries, userId, addressStored = {} }: Props) =>
 
   const onSubmit = async (data: FormInput) => {
     const {rememberAdress, ...rest} = data
-    console.log('mis rest es: ', rest)
     setAddress(rest);
 
     if(rememberAdress){
@@ -64,7 +60,6 @@ export const AddressForm = ({ countries, userId, addressStored = {} }: Props) =>
   useEffect(() => {
     //ESTE RESET AHCE QUE SE QUITE EL DEFAULT VALUE
     if(!addressStored.firstName){
-      console.log('hay id en la address que le meto?', address)
       reset(address);
     }
   }, [address.firstName]);
