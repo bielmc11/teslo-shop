@@ -38,17 +38,42 @@ export const placeOrder = async ({
     }
   })
 
+  console.log(products)
+
   //Calculo los precios
   const itemsInOrder = productsToOrder.reduce((acc, item) => {
     return acc + item.quantity
   },0)
 
-  console.log(itemsInOrder)
+
+  //calculo los totales, subtotales y taxes
+  const {subtotal, taxes, total} = productsToOrder.reduce((acc, item) => {
+    //La cantidad
+    const quantity = item.quantity
+    //La info fiable de la BD (por el precio)
+    const product = products.find(prod => prod.id === item.productId)
+
+    if(!product) throw (`${item.productId} no existe - 500`)
+
+    const subtotal = quantity * product.price
+    const taxes = subtotal * 0.15
+    const total = subtotal + taxes
+
+    return {subtotal: acc.subtotal + subtotal, taxes: acc.taxes + taxes, total: acc.total + total}
+  }
+  ,{subtotal: 0, taxes: 0, total: 0})
+
+  console.log({subtotal, taxes, total})
+
+  
+  //Crear la transaccion a la BD
+  const prismaTx = await prisma.$transaction([])
 
 
 
 
 
-  console.log( {productsToOrder, address, session } );
+
+
   return session.user;
 };
