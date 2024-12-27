@@ -30,6 +30,7 @@ export const PlaceOrder = () => {
   if (!loaded) {
     return <p>Cargando...</p>;
   }
+  
   const onPlaceOrder = async () => {
     setIsPlacingOrder(true);
 
