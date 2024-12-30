@@ -5,15 +5,20 @@ import { useCartStore } from "@/store/cart/cart-store";
 import { currencyFormat } from "@/utils/currencyFormat";
 import { sleep } from "@/utils/sleep";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
 export const PlaceOrder = () => {
+  const router = useRouter();
+
   const [loaded, setLoaded] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const address = useAddressStore((state) => state.address);
   const cart = useCartStore((state) => state.cart);
+  const clearCart = useCartStore((state) => state.clearCart);
   
 
   const { subTotal, tax, total, totalItems } = useCartStore(
@@ -43,9 +48,21 @@ export const PlaceOrder = () => {
     }));
 
 
-    await placeOrder({ productsToOrder, address });
+    const res = await placeOrder({ productsToOrder, address });
+    if(!res.ok){
+      setIsPlacingOrder(false);
+      setErrorMessage(res.message);
+      return
+    }
 
-    setIsPlacingOrder(false);
+    //SI llega aqui es porque todo salio bien
+    //Limpio el carrito y redirecciono
+    clearCart()
+    router.replace('/orders/' + res.order)
+    
+
+
+
   };
 
   return (
@@ -100,6 +117,8 @@ export const PlaceOrder = () => {
             </a>
             deprivacidad
           </span>
+
+          <p className="text-red-500 mt-2">{errorMessage}</p>
 
           <div className="mt-5 w-full flex justify-center mb-2">
             {/* <span className="text-red-500">Error en la creacion</span> */}

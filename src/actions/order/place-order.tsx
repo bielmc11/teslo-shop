@@ -39,7 +39,7 @@ export const placeOrder = async ({
         in: productsToOrder.map((item) => item.productId),
       },
     },
-  });
+  });  
 
   //Calculo la cantidad
   const itemsInOrder = productsToOrder.reduce((acc, item) => {
@@ -78,8 +78,6 @@ export const placeOrder = async ({
         const productQuantity = productsToOrder
           .filter((p) => p.productId === item.id)
           .reduce((acc, now) => acc + now.quantity, 0);
-
-          console.log("productQuantity", productQuantity);
 
         if (productQuantity <= 0) {
           throw new Error(`${item.id} no tiene canitdad definida`);
