@@ -1,7 +1,9 @@
+import { getOrderById } from "@/actions/order/get-order-by.id";
 import { Title } from "@/components/inedx";
 import { initialData } from "@/seed/seed";
 import clsx from "clsx";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import { IoCardOutline } from "react-icons/io5";
 
 const productsInCart = [
@@ -15,8 +17,18 @@ interface Props {
     id: string;
   };
 }
-export default function OrderPage({ params }: Props) {
+export default async function OrderPage({ params }: Props) {
   const { id } = params;
+
+  const myOrder = await getOrderById(id);
+
+  const address = myOrder?.order?.OrderAdress;
+
+  console.log(myOrder?.order?.OrderItem);
+
+  if (!myOrder.ok) {
+    redirect(`/`);
+  }
 
   //TODO VERIFICAR
   //redirect()
@@ -33,33 +45,36 @@ export default function OrderPage({ params }: Props) {
               className={clsx(
                 "flex items-center rounded py-2 px-3.5 text-xs font-bold text-white mb-5",
                 {
-                  "bg-red-500": false,
-                  "bg-green-700": true,
+                  "bg-red-500": myOrder.order?.isPaid === false,
+                  "bg-green-700": myOrder.order?.isPaid === true,
                 }
               )}
             >
               <IoCardOutline size={30} />
-              <span className="mx-2 ">Pendiente de pago</span>
-              <span className="mx-2 ">Pago realizado</span>
+              <span className="mx-2 ">
+                {myOrder.order?.isPaid
+                  ? "Pago realizado"
+                  : "Pago pendiente de realizar"}
+              </span>
             </div>
 
             {/* items del carrito */}
 
-            {productsInCart.map((product) => (
-              <div key={product.slug} className="flex items-center mb-5">
+            {myOrder!.order!.OrderItem.map((item) => (
+              <div key={item.product.slug} className="flex items-center mb-5">
                 <Image
-                  src={`/products/${product.images[0]}`}
+                  src={`/products/${item.product.images?.[0].url}`}
                   width={100}
                   height={100}
-                  alt={product.title}
+                  alt={item.product.title}
                   className="mr-5 rounded"
                 />
 
                 <div>
-                  <p>{product.title}</p>
-                  <p>${product.price} x 3</p>
+                  <p>{item.product.title}</p>
+                  <p>${item.price} x 3</p>
                   {/* FALTA LEER DE COOKIES CANTIDFAD */}
-                  <p className="font-bold">Subtotal: {product.price * 3}</p>
+                  <p className="font-bold">Subtotal: {item.price * 3}</p>
                   {/* FALTA LEER DE COOKIES CANTIDFAD */}
                 </div>
               </div>
@@ -71,12 +86,19 @@ export default function OrderPage({ params }: Props) {
             <h2 className="text-2xlmb-2">Direaccion de entrega</h2>
             {/* FALAT SABER LA DIRECCION */}
             <div className="mb-5">
-              <p className="font-bold">Fernando Herrera</p>
-              <p>Av inventada</p>
-              <p>Barcelona</p>
-              <p>cataluña</p>
-              <p>64343432425</p>
-            </div>
+            <p>
+              {" "}
+              {address!.firstName} {address!.lastName}
+            </p>
+            <p>{address!.address}</p>
+            <p>{address!.address2}</p>
+            <p>{address!.postalCode}</p>
+            <p>
+              {address!.city}, {address!.countryId}
+            </p>
+            <p>{address!.phone}</p>
+          </div>
+
 
             {/* divider */}
             <div className="w-full h-0.5 bg-gray-300 mb-5 rounded"></div>
@@ -105,14 +127,18 @@ export default function OrderPage({ params }: Props) {
                 className={clsx(
                   "flex items-center rounded py-2 px-3.5 text-xs font-bold text-white mb-5 w-full",
                   {
-                    "bg-red-500": false,
-                    "bg-green-700": true,
+                    "bg-red-500": myOrder.order?.isPaid === false,
+                    "bg-green-700": myOrder.order?.isPaid === true,
                   }
                 )}
               >
                 <IoCardOutline size={30} />
-                <span className="mx-2 ">Pendiente de pago</span>
-                <span className="mx-2 ">Pago realizado</span>
+                <span className="mx-2 ">
+                  {" "}
+                  {myOrder.order?.isPaid
+                    ? "Pago realizado"
+                    : "Pago pendiente de realizar"}{" "}
+                </span>
               </div>
             </div>
           </div>
