@@ -1,16 +1,12 @@
 import { getOrderById } from "@/actions/order/get-order-by.id";
 import { Title } from "@/components/inedx";
-import { initialData } from "@/seed/seed";
+import { currencyFormat } from "@/utils/currencyFormat";
 import clsx from "clsx";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { IoCardOutline } from "react-icons/io5";
 
-const productsInCart = [
-  initialData.products[0],
-  /* initialData.products[1],
-  initialData.products[2], */
-];
+
 
 interface Props {
   params: {
@@ -24,7 +20,7 @@ export default async function OrderPage({ params }: Props) {
 
   const address = myOrder?.order?.OrderAdress;
 
-  console.log(myOrder?.order?.OrderItem);
+  console.log(myOrder?.order?.itemsInOrder);
 
   if (!myOrder.ok) {
     redirect(`/`);
@@ -72,9 +68,9 @@ export default async function OrderPage({ params }: Props) {
 
                 <div>
                   <p>{item.product.title}</p>
-                  <p>${item.price} x 3</p>
+                  <p>{item.price} x {item.quantity}</p>
                   {/* FALTA LEER DE COOKIES CANTIDFAD */}
-                  <p className="font-bold">Subtotal: {item.price * 3}</p>
+                  <p className="font-bold">Subtotal: {currencyFormat(item.price * item.quantity)}</p>
                   {/* FALTA LEER DE COOKIES CANTIDFAD */}
                 </div>
               </div>
@@ -83,9 +79,10 @@ export default async function OrderPage({ params }: Props) {
 
           {/* Checkout - Resumen de orden */}
           <div className="bg-white rounded-xl shadow-xl p-2 sm:p-7">
-            <h2 className="text-2xlmb-2">Direaccion de entrega</h2>
+            <h2 className="text-2xl mb-2">Direaccion de entrega</h2>
             {/* FALAT SABER LA DIRECCION */}
             <div className="mb-5">
+            <p className="font-bold text-xl">Fernando Herrera</p>
             <p>
               {" "}
               {address!.firstName} {address!.lastName}
@@ -106,19 +103,19 @@ export default async function OrderPage({ params }: Props) {
             <h2 className="text-2xl mb-2">Resumen de pedido</h2>
             <div className="grid grid-cols-2 mb-4">
               <span>No. Productos</span>
-              <span className="text-right">3 Articulos</span>
+              <span className="text-right"> {myOrder.order?.itemsInOrder} Articulos</span>
               {/* Hasta que lea cookies */}
 
               <span>Subtotal</span>
-              <span className="text-right">$ 100</span>
+              <span className="text-right">{currencyFormat(Number(myOrder.order?.subTotal))} </span>
               {/* Hasta que lea cookies */}
 
               <span>Impuestos (15%)</span>
-              <span className="text-right">$ 15</span>
+              <span className="text-right"> {currencyFormat(Number(myOrder.order?.tax))} </span>
               {/* Hasta que lea cookies */}
 
               <span className="mt-5 text-2xl">Total:</span>
-              <span className="text-right mt-5 text-2xl">$ 115</span>
+              <span className="text-right mt-5 text-2xl"> {currencyFormat(Number(myOrder.order?.total))} </span>
               {/* Hasta que lea cookies */}
             </div>
 

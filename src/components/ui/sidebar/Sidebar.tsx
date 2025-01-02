@@ -88,7 +88,7 @@ export const Sidebar = () => {
             </Link>
 
             <Link
-              href={"/"}
+              href={"/orders"}
               className="flex items-center gap-2 mt-10 p-2 rounded hover:bg-gray-100 translate-all"
               onClick={() => changeIsOpen()}
             >
