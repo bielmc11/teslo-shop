@@ -143,6 +143,8 @@ model Order {
   OrderItem OrderItem[]
 
   OrderAdress OrderAdress?
+
+  transitionId String?
 }
 
 model OrderItem {

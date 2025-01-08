@@ -12,8 +12,8 @@ export default function ShopLayout({
       <TopMenu />
       <AuthProvider>
         <Sidebar />
+        <div className="md:px-10">{children}</div>
       </AuthProvider>
-      <div className="md:px-10">{children}</div>
       <Footer />
     </main>
   );

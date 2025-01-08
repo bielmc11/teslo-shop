@@ -1,5 +1,5 @@
 import { getOrderById } from "@/actions/order/get-order-by.id";
-import { Title } from "@/components/inedx";
+import { PayPalButton, Title } from "@/components/inedx";
 import { currencyFormat } from "@/utils/currencyFormat";
 import clsx from "clsx";
 import Image from "next/image";
@@ -119,8 +119,8 @@ export default async function OrderPage({ params }: Props) {
               {/* Hasta que lea cookies */}
             </div>
 
-            <div className="mt-5 w-full flex justify-center mb-2">
-              <div
+            <div className="mt-5 w-full flex justify-center mb-2 ">
+             {/*  <div
                 className={clsx(
                   "flex items-center rounded py-2 px-3.5 text-xs font-bold text-white mb-5 w-full",
                   {
@@ -136,7 +136,8 @@ export default async function OrderPage({ params }: Props) {
                     ? "Pago realizado"
                     : "Pago pendiente de realizar"}{" "}
                 </span>
-              </div>
+              </div> */}
+              <PayPalButton  />
             </div>
           </div>
         </div>

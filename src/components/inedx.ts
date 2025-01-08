@@ -10,4 +10,5 @@ export { ProductSlideShow } from "./product/slideshow/ProductSlideShow";
 export { ProductMovileSlideShow } from "./product/slideshow/ProductMovileSlideShow";
 export {Footer} from './ui/footer/Footer'
 export {StockLabel} from "./product/stockLabel/StockLabel"
-export {AuthProvider} from "./providers/AuthProvider"
+export {AuthProvider} from "./providers/Providers"
+export {PayPalButton} from "./paypal/PayPalButton"
