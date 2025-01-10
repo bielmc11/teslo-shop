@@ -1,5 +1,7 @@
 "use server";
 
+import prisma from "@/lib/prisma";
+
 export const paypalCheckPayment = async (transactionId: string) => {
   const authToken = await getPaypalBearerToken();
 
@@ -22,6 +24,28 @@ export const paypalCheckPayment = async (transactionId: string) => {
 
   //TODO actualziar la BD para que ponga isPaid true
 
+  try{ //TODO: 
+         //1-) Sacar el boton si ya esta pagado
+         //2-) el id lo tengo que mandar tambien pillado de la URL params creo
+    await prisma.order.update({
+      where: {
+        id:'704759ab-2e47-4ebe-90b9-828e92dff3ae' ,
+      },
+      data: {
+        isPaid: true,
+        paidAt: new Date(),
+      }
+    })
+
+  }catch(e){
+    console.log(e);
+    return {
+      ok: false,
+      message: "Error al actualizar la BD",
+    }
+  }
+
+  //TODO revalidar un path para que next js refresque la pagina
 
 };
 
@@ -49,7 +73,10 @@ const getPaypalBearerToken = async () => {
   };
 
   try {
-    const resul = await fetch(oauth2Url, requestOptions).then((res) =>
+    const resul = await fetch(oauth2Url, {
+      ...requestOptions,
+      cache: "no-store",
+    }).then((res) =>
       res.json()
     );
     return resul.access_token;
@@ -78,7 +105,10 @@ const verifyPaypalPayment = async (
   try {
     const res = await fetch(
       `${paypalOrderUrl}/${transactionId}`,
-      requestOptions
+      {
+        ...requestOptions,
+        cache: "no-store",
+      }
     );
     //Me falta el return joder
     return res.json();
