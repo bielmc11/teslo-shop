@@ -1,10 +1,10 @@
 "use client";
 
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { CreateOrderActions, CreateOrderData } from "@paypal/paypal-js";
+import { CreateOrderActions, CreateOrderData, OnApproveActions, OnApproveData } from "@paypal/paypal-js";
 import React from "react";
 import { useParams } from "next/navigation";
-import { setTransactionId } from "@/actions/index";
+import { paypalCheckPayment, setTransactionId } from "@/actions/index";
 
 interface Props {
   orderId: string;
@@ -34,16 +34,27 @@ export const PayPalButton = ({ orderId, amount }: Props) => {
         ],
       });
 
-      //TOD guiardar el id en la orden en la BD
+      //TODO guardar el id en la orden en la BD
       //setTransacctionId
-     const { ok } = await setTransactionId(orderId, transactionId);
-     if(!ok) throw new Error('No se puedo actualizar la orden')
+      const { ok } = await setTransactionId(orderId, transactionId);
+      if (!ok) throw new Error("No se puedo actualizar la orden");
 
       return transactionId;
     } catch (e) {
-      return "";
       console.log(e);
+      return ''
     }
+  };
+
+  const onAprove = async (data: OnApproveData, actions: OnApproveActions) => {
+    console.log('onAproveeee')
+    const details = await actions.order?.capture()
+    console.log('mis details para saber si me he metido bien son', details)
+    
+    if(!details) return
+    
+    //El details.id es el id de la transaccion que he creado antes aqui comprobare si esta pagado
+    await paypalCheckPayment(details.id!)
   };
 
   return (
@@ -54,7 +65,11 @@ export const PayPalButton = ({ orderId, amount }: Props) => {
           <div className="h-12 w-full bg-gray-300 rounded mt-2 mb-8"> </div>
         </div>
       ) : (
-        <PayPalButtons className="w-full" createOrder={createOrder} />
+        <PayPalButtons
+          className="w-full"
+          createOrder={createOrder}
+          onApprove={onAprove}
+        />
       )}
     </div>
   );

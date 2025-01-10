@@ -6,3 +6,4 @@ export { getCountries } from "./countries/get-contires";
 export { placeOrder } from "./order/place-order";
 export { getOrdersByUsers } from "./order/get-orders-by-users";
 export { setTransactionId } from "./payments/set-transaction-id";
+export { paypalCheckPayment } from "./payments/paypal-check-payments";
