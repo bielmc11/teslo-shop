@@ -1,14 +1,17 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export const paypalCheckPayment = async (transactionId: string) => {
+  //1- obtengo el token para hacer la llamda
   const authToken = await getPaypalBearerToken();
 
   console.log("authToken", authToken);
 
   if (!authToken) return { ok: false, message: "No se pudo obtener el token" };
 
+  //2- Hago la llamada para ver la info de mi transaccion
   const res = await verifyPaypalPayment(transactionId, authToken);
 
   console.log('la segunda funcion es', res);
@@ -16,26 +19,33 @@ export const paypalCheckPayment = async (transactionId: string) => {
   if (!res) return { ok: false, message: "Error al verificar la transaccion" };
 
   const { status, purchase_units } = res;
-  console.log(status);
-  console.log(purchase_units);
+  const { invoice_id } = purchase_units[0];
+
+  
+  //console.log(invoice_id);
   //const {} = purchase_units[0] //TODO:
 
   if(status !== "COMPLETED") return { ok: false, message: "No se ha pagado la orden" }
 
-  //TODO actualziar la BD para que ponga isPaid true
 
   try{ //TODO: 
          //1-) Sacar el boton si ya esta pagado
          //2-) el id lo tengo que mandar tambien pillado de la URL params creo
     await prisma.order.update({
       where: {
-        id:'704759ab-2e47-4ebe-90b9-828e92dff3ae' ,
+        //TODO CAMBIAR ESTE ID POR EL QUE SACARE DE LA INFO DE LA LLAMADA A AL TRANSACCION
+        id: invoice_id ,
       },
       data: {
         isPaid: true,
         paidAt: new Date(),
       }
     })
+
+    //REvalido el path
+    revalidatePath(`/orders/${invoice_id}`)
+
+    return { ok: true, message: "Transaccion pagada correctamente" };
 
   }catch(e){
     console.log(e);

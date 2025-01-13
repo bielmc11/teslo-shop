@@ -3,7 +3,6 @@
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { CreateOrderActions, CreateOrderData, OnApproveActions, OnApproveData } from "@paypal/paypal-js";
 import React from "react";
-import { useParams } from "next/navigation";
 import { paypalCheckPayment, setTransactionId } from "@/actions/index";
 
 interface Props {
@@ -25,7 +24,7 @@ export const PayPalButton = ({ orderId, amount }: Props) => {
         purchase_units: [
           {
             //reference_id: order_id
-            //invoice_id: orderId
+            invoice_id: orderId,
             amount: {
               value: `${roundedAmount}`,
               currency_code: "USD",
@@ -47,9 +46,7 @@ export const PayPalButton = ({ orderId, amount }: Props) => {
   };
 
   const onAprove = async (data: OnApproveData, actions: OnApproveActions) => {
-    console.log('onAproveeee')
     const details = await actions.order?.capture()
-    console.log('mis details para saber si me he metido bien son', details)
     
     if(!details) return
     

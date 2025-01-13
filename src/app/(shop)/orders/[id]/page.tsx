@@ -19,8 +19,10 @@ export default async function OrderPage({ params }: Props) {
   const myOrder = await getOrderById(id);
 
   const address = myOrder?.order?.OrderAdress;
+  const isPaid = myOrder?.order?.isPaid
 
-  console.log(myOrder?.order?.itemsInOrder);
+
+
 
   if (!myOrder.ok) {
     redirect(`/`);
@@ -137,10 +139,17 @@ export default async function OrderPage({ params }: Props) {
                     : "Pago pendiente de realizar"}{" "}
                 </span>
               </div> */}
-              <PayPalButton 
-              amount={myOrder.order!.total}
-               orderId={myOrder.order!.id}
-               />
+
+              {
+                !isPaid 
+                  ? <PayPalButton 
+                  amount={myOrder.order!.total}
+                   orderId={myOrder.order!.id}
+                   />
+                  : <div className="flex justify-center bg-green-700 w-full items-center rounded py-2 px-3.5 text-xs font-bold text-white mb-5"><span className="text-lg">Pago realizado</span></div>
+              }
+
+              
             </div>
           </div>
         </div>
