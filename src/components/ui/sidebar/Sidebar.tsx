@@ -111,28 +111,30 @@ export const Sidebar = () => {
         {isAdmin && (
           <div className="w-full h-px bg-gray-200 my-10">
             <Link
-              href={"/"}
+              href={"/admin/newProducts"}
+              onClick={() => changeIsOpen()}
               className="flex items-center gap-2 mt-10 p-2 rounded hover:bg-gray-100 translate-all"
             >
               <IoShirtOutline size={20} />
-              <span className="text-xl">Productos</span>
+              <span className="text-xl">Añadir Productos</span>
             </Link>
 
             <Link
-              href={"/"}
+              href={"/admin/orders"}
+              onClick={() => changeIsOpen()}
               className="flex items-center gap-2 mt-10 p-2 rounded hover:bg-gray-100 translate-all"
             >
               <IoTicketOutline size={20} />
               <span className="text-xl">Ordenes</span>
             </Link>
 
-            <Link
+            {/* <Link
               href={"/"}
               className="flex items-center gap-2 mt-10 p-2 rounded hover:bg-gray-100 translate-all"
             >
               <IoPeopleOutline size={20} />
               <span className="text-xl">usuarios</span>
-            </Link>
+            </Link> */}
           </div>
         )}
       </nav>
