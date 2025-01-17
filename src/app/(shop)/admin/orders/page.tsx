@@ -6,15 +6,14 @@ export default async function OrdersAdminPage() {
   const { ok, orders } = await getAllOrders();
 
   if (!ok) redirect("/");
-  console.log(orders);
 
   return (
     <div>
         <h2 className="font-bold text-2xl mt-10">Ordenes</h2>
-      <div className="w-full flex justify-center mt-10">
-        <table className="grow">
-          <thead className="bg-gray-200 border-b rounded">
-            <tr>
+      <div className="w-full flex justify-center mt-10 ">
+        <table className="grow max-w-[1600px] ">
+          <thead className="bg-gray-200 border-b">
+            <tr className="rounded-xl">
               <th className="text-sm font-medium text-gray-900 px-6 py-4 text-center">
                 Order Id
               </th>
@@ -33,13 +32,16 @@ export default async function OrdersAdminPage() {
             </tr>
           </thead>
           <tbody>
-            {orders?.map((order) => {
+            {orders?.map((order, i) => {
               const { id, isPaid, total, userId,user } = order;
 
               console.log(isPaid);
 
+              const isOdd = (i % 2 === 0) ? 'bg-white' : 'bg-orange-100';
+
+
               return (
-                <tr className="text-center" key={id}>
+                <tr className={`text-center ${isOdd}`} key={id}>
                   <td>{id.split("-").at(-1)}</td>
                   <td>{userId.split("-").at(-1)}</td>
                   <td>{user.name}</td>
