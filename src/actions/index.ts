@@ -8,3 +8,4 @@ export { getOrdersByUsers } from "./order/get-orders-by-users";
 export { setTransactionId } from "./payments/set-transaction-id";
 export { paypalCheckPayment } from "./payments/paypal-check-payments";
 export {getAllOrders} from "./admin/orders/get-all-orders";
+export {getAllProducts} from "./admin/products/get-all-products";

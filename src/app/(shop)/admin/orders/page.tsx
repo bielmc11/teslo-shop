@@ -9,7 +9,7 @@ export default async function OrdersAdminPage() {
 
   return (
     <div>
-        <h2 className="font-bold text-2xl mt-10">Ordenes</h2>
+      <h2 className="font-bold text-2xl mt-10">Ordenes</h2>
       <div className="w-full flex justify-center mt-10 ">
         <table className="grow max-w-[1600px] ">
           <thead className="bg-gray-200 border-b">
@@ -33,25 +33,24 @@ export default async function OrdersAdminPage() {
           </thead>
           <tbody>
             {orders?.map((order, i) => {
-              const { id, isPaid, total, userId,user } = order;
-
-              console.log(isPaid);
-
-              const isOdd = (i % 2 === 0) ? 'bg-white' : 'bg-orange-100';
-
+              const { id, isPaid, userId, user } = order;
+              const isOdd =
+                i % 2 === 0 ? "bg-white" : "bg-orange-100";
 
               return (
-                <tr className={`text-center ${isOdd}`} key={id}>
-                  <td>{id.split("-").at(-1)}</td>
+                <tr className={`text-center ${isOdd} my-2`} key={id}>
+                  <td className="py-2">{id.split("-").at(-1)}</td>
                   <td>{userId.split("-").at(-1)}</td>
                   <td>{user.name}</td>
-                  <td className={clsx(
-                    {
-                        'text-green-800' : isPaid,
-                        'text-red-700': !isPaid
-                    }
-                  )}>{isPaid ? "Pagada" : "No Pagada"}</td>
-                  <td>delete</td>
+                  <td
+                    className={clsx({
+                      "text-green-800": isPaid,
+                      "text-red-700": !isPaid,
+                    })}
+                  >
+                    {isPaid ? "Pagada" : "No Pagada"}
+                  </td>
+                  <td>Detalles</td>
                 </tr>
               );
             })}

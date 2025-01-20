@@ -41,7 +41,6 @@ export const CreateUserForm = () => {
     }
   };
 
-  console.log("mis errores son:", errors.name);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col ">

@@ -118,6 +118,14 @@ export const Sidebar = () => {
               <IoShirtOutline size={20} />
               <span className="text-xl">Añadir Productos</span>
             </Link>
+            <Link
+              href={"/admin/products"}
+              onClick={() => changeIsOpen()}
+              className="flex items-center gap-2 mt-10 p-2 rounded hover:bg-gray-100 translate-all"
+            >
+              <IoShirtOutline size={20} />
+              <span className="text-xl">Todos los Productos</span>
+            </Link>
 
             <Link
               href={"/admin/orders"}
