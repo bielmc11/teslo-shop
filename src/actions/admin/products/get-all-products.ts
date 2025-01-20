@@ -7,7 +7,8 @@ export const getAllProducts = async () => {
         const products = await prisma.product.findMany({
             include: {
                 images: true
-            }
+            },
+            take: 10
         })
         return {
             ok: true,
