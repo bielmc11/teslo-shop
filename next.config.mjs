@@ -5,9 +5,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "tailus.io",
       },
-
     ],
   },
 };
+
+
 
 export default nextConfig;
