@@ -1,32 +1,71 @@
 "use client";
 
 import { Product } from "@/interfaces/product.interface";
+import { useForm } from "react-hook-form";
 
+type ProductsBD = {
+  id: string;
+  title: string;
+  description: string;
+  images: string[];
+  inStock: number;
+  price: number;
+  sizes: string[];
+  slug: string;
+  tags: string[];
+  gender: "men" | "women" | "kid" | "unisex";
+  categoryId: string;
+}
 
 interface Props {
-  product: Product;
+  product: ProductsBD;
+  categories: { id: string; name: string }[];
 }
 
 const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
-export const ProductForm = ({ product }: Props) => {
+export const ProductForm = ({ product, categories }: Props) => {
+
+  console.log(product);
+
+  const {register, handleSubmit,formState:{errors}} = useForm<ProductsBD>({
+    defaultValues: {
+      title: product.title,
+      description: product.description,
+      images: product.images,
+      inStock: product.inStock,
+      price: product.price,
+      sizes: product.sizes,
+      slug: product.slug,
+      tags: product.tags,
+      gender: product.gender,
+      categoryId: product.categoryId
+    }
+  })
+
+  const onSubmit = (data: ProductsBD) => {
+
+  }
+  
+
   return (
-    <form className="grid px-5 mb-16 grid-cols-1 sm:px-0 sm:grid-cols-2 gap-3">
+    <form  onSubmit={handleSubmit(onSubmit)} className="grid px-5 mb-16 grid-cols-1 sm:px-0 sm:grid-cols-2 gap-3">
       {/* Textos */}
       <div className="w-full">
         <div className="flex flex-col mb-2">
           <span>Título</span>
-          <input type="text" className="p-2 border rounded-md bg-gray-200" />
+          <input {...register('title', {required: true}) } type="text" className="p-2 border rounded-md bg-gray-200" />
         </div>
 
         <div className="flex flex-col mb-2">
           <span>Slug</span>
-          <input type="text" className="p-2 border rounded-md bg-gray-200" />
+          <input  {...register('slug', {required: true}) } type="text" className="p-2 border rounded-md bg-gray-200" />
         </div>
 
         <div className="flex flex-col mb-2">
           <span>Descripción</span>
           <textarea
+          {...register('description', {required: true}) }
             rows={5}
             className="p-2 border rounded-md bg-gray-200"
           ></textarea>
@@ -34,17 +73,17 @@ export const ProductForm = ({ product }: Props) => {
 
         <div className="flex flex-col mb-2">
           <span>Price</span>
-          <input type="number" className="p-2 border rounded-md bg-gray-200" />
+          <input {...register('price', {required: true}) } type="number" className="p-2 border rounded-md bg-gray-200" />
         </div>
 
         <div className="flex flex-col mb-2">
           <span>Tags</span>
-          <input type="text" className="p-2 border rounded-md bg-gray-200" />
+          <input {...register('tags', {required: true}) } type="text" className="p-2 border rounded-md bg-gray-200" />
         </div>
 
         <div className="flex flex-col mb-2">
           <span>Gender</span>
-          <select className="p-2 border rounded-md bg-gray-200">
+          <select  {...register('gender', {required: true}) } className="p-2 border rounded-md bg-gray-200">
             <option value="">[Seleccione]</option>
             <option value="men">Men</option>
             <option value="women">Women</option>
@@ -55,8 +94,16 @@ export const ProductForm = ({ product }: Props) => {
 
         <div className="flex flex-col mb-2">
           <span>Categoria</span>
-          <select className="p-2 border rounded-md bg-gray-200">
-            <option value="">[Seleccione]</option>
+          <select {...register('categoryId', {required: true}) } className="p-2 border rounded-md bg-gray-200">
+            <option  value="">[Seleccione]</option>
+            {
+              categories.map( category => (
+                <option key={category.id} value={category.id} > {category.name.toUpperCase()} </option>
+                
+              ))
+            }
+            
+            
           </select>
         </div>
 
