@@ -10,17 +10,18 @@ export const getProductBySlug = async (slug: string) => {
                 slug
             },
             include: {
-                images: true
+               images : true
             }
         })
 
         console.log(product)
 
-        if(!product)return null
+        if(!product) return null
 
         //return product
         return {
             ...product,
+            productImages: product.images,
             images: product.images.map((image) => image.url)
         }
 

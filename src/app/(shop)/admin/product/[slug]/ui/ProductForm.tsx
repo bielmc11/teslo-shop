@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner";
+import Image from "next/image";
 
 export type ProductsBD = {
   title: string;
@@ -19,6 +20,7 @@ export type ProductsBD = {
   categoryId: string;
   
   images: string[];
+  productImages: {id: string, url: string, productId: string}[];
 };
 
 interface Props {
@@ -46,7 +48,7 @@ export const ProductForm = ({ product, categories }: Props) => {
       description: product.description,
       price: product.price,
       inStock: product.inStock,
-      sizes: product.sizes,
+      sizes: product.sizes ?? [],
       tags: product.tags,
       gender: product.gender,
       categoryId: product.categoryId,
@@ -57,14 +59,14 @@ export const ProductForm = ({ product, categories }: Props) => {
 
   const onSubmit = async (data: ProductsBD) => {
     console.log(data);
-    const res = await updateProducts(data, oldSlug);
+    /* const res = await updateProducts(data, oldSlug);
 
 
     toast.loading("Guardando...");
 
     if (res.ok) {
       toast.success("Guardado");
-    }
+    } */
   };
 
   return (
@@ -179,6 +181,24 @@ export const ProductForm = ({ product, categories }: Props) => {
               className="p-2 border rounded-md bg-gray-200"
               accept="image/png, image/jpeg"
             />
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {
+                product.productImages.map((image) => (
+                  <div key={image.id}>
+                    <Image
+                    alt=""
+                    src={`/products/${image.url}`}
+                    width={300}
+                    height={300}
+                    className="rounded-t-md shadow-md"
+                    />
+                    <button type="button" className="bg-red-500 w-full hover:bg-red-700 text-white py-2 px-4 transition-all rounded-b-xl">Eliminar</button>
+
+                  </div>
+                ))
+              }
+            </div>
           </div>
         </div>
       </div>
