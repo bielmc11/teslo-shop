@@ -1,24 +1,24 @@
 "use client";
 
 import { updateProducts } from "@/actions/admin/products/update-products";
-import {  Size } from "@/interfaces/product.interface";
+import { Size } from "@/interfaces/product.interface";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner";
 
 export type ProductsBD = {
-  id: string;
   title: string;
-  description: string;
-  images: string[];
-  inStock: number;
-  price: number;
-  sizes: Size[];
   slug: string;
+  description: string;
+  price: number;
+  inStock: number;
+  sizes: Size[];
   tags: string[];
   gender: "men" | "women" | "kid" | "unisex";
   categoryId: string;
+  
+  images: string[];
 };
 
 interface Props {
@@ -42,32 +42,29 @@ export const ProductForm = ({ product, categories }: Props) => {
   } = useForm<ProductsBD>({
     defaultValues: {
       title: product.title,
-      description: product.description,
-      images: product.images,
-      inStock: product.inStock,
-      price: product.price,
-      sizes: product.sizes,
       slug: product.slug,
+      description: product.description,
+      price: product.price,
+      inStock: product.inStock,
+      sizes: product.sizes,
       tags: product.tags,
       gender: product.gender,
       categoryId: product.categoryId,
+
+      images: product.images,
     },
   });
 
   const onSubmit = async (data: ProductsBD) => {
-  
+    console.log(data);
+    const res = await updateProducts(data, oldSlug);
 
 
-    const res = await updateProducts(data, oldSlug) ;
-    
     toast.loading("Guardando...");
 
-
-    if(res.ok){
-        toast.success("Guardado");
+    if (res.ok) {
+      toast.success("Guardado");
     }
-
-    
   };
 
   return (
@@ -185,7 +182,7 @@ export const ProductForm = ({ product, categories }: Props) => {
           </div>
         </div>
       </div>
-       <Toaster position="bottom-right" /> 
+      <Toaster position="bottom-right" />
     </form>
   );
 };

@@ -13,9 +13,11 @@ interface Props{
 export default async function ProductPage({ params}: Props) {
     const { slug } = params
     
-    const product = await getProductBySlug(slug)
 
-    const {ok, categories} = await getAllCategories()
+
+    const [product, catergoriesData] = await Promise.all([getProductBySlug(slug), getAllCategories()])
+    
+    const {ok, categories} = catergoriesData
     
     if(!ok){
         redirect(`/admin/products`)
