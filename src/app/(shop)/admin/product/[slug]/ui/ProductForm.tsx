@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner";
 import Image from "next/image";
+import clsx from "clsx";
 
 export type ProductsBD = {
   title: string;
@@ -18,9 +19,9 @@ export type ProductsBD = {
   tags: string[];
   gender: "men" | "women" | "kid" | "unisex";
   categoryId: string;
-  
+
   images: string[];
-  productImages: {id: string, url: string, productId: string}[];
+  productImages: { id: number; url: string; productId: string }[];
 };
 
 interface Props {
@@ -28,10 +29,11 @@ interface Props {
   categories: { id: string; name: string }[];
 }
 
-const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+const sizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
 export const ProductForm = ({ product, categories }: Props) => {
   const [loading, setLoading] = useState(false);
+  const [tallas, setTallas] = useState(product.sizes);
 
   const params = useParams();
   const router = useRouter();
@@ -40,6 +42,9 @@ export const ProductForm = ({ product, categories }: Props) => {
   const {
     register,
     handleSubmit,
+    getValues,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ProductsBD>({
     defaultValues: {
@@ -57,7 +62,20 @@ export const ProductForm = ({ product, categories }: Props) => {
     },
   });
 
+  const changeSizes = (size: Size) => {
+
+    if (getValues('sizes').includes(size)) {
+      setValue('sizes', getValues('sizes').filter((s) => s !== size))
+      return
+    }
+    setValue('sizes',[...getValues('sizes'), size])
+    
+  }
+
+  watch('sizes')
+
   const onSubmit = async (data: ProductsBD) => {
+    //Todo cuando envio el objeto recordar que tengo que cambiar el size por mi estado de tallas
     console.log(data);
     /* const res = await updateProducts(data, oldSlug);
 
@@ -76,7 +94,11 @@ export const ProductForm = ({ product, categories }: Props) => {
     >
       {/* Textos */}
       <div className="w-full">
+        {
+          errors.title && <span className="text-sm text-red-600">Campo obligatorio</span>
+        }
         <div className="flex flex-col mb-2">
+          
           <span>Título</span>
           <input
             {...register("title", { required: true })}
@@ -86,6 +108,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
+        {
+          errors.slug && <span className="text-sm text-red-600">Campo obligatorio</span>
+        }
           <span>Slug</span>
           <input
             {...register("slug", { required: true })}
@@ -95,6 +120,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
+        {
+          errors.description && <span className="text-sm text-red-600">Campo obligatorio</span>
+        }
           <span>Descripción</span>
           <textarea
             {...register("description", { required: true })}
@@ -104,6 +132,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
+        {
+          errors.price && <span className="text-sm text-red-600">Campo obligatorio</span>
+        }
           <span>Price</span>
           <input
             {...register("price", { required: true })}
@@ -113,6 +144,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
+        {
+          errors.tags && <span className="text-sm text-red-600">Campo obligatorio</span>
+        }
           <span>Tags</span>
           <input
             {...register("tags", { required: true })}
@@ -122,6 +156,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
+        {
+          errors.gender && <span className="text-sm text-red-600">Campo obligatorio</span>
+        }
           <span>Gender</span>
           <select
             {...register("gender", { required: true })}
@@ -136,6 +173,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
+        {
+          errors.categoryId && <span className="text-sm text-red-600">Campo obligatorio</span>
+        }
           <span>Categoria</span>
           <select
             {...register("categoryId", { required: true })}
@@ -160,17 +200,27 @@ export const ProductForm = ({ product, categories }: Props) => {
       <div className="w-full">
         {/* As checkboxes */}
         <div className="flex flex-col">
+          {
+            tallas.length === 0 && <span className="text-xs text-red-600">No hay tallas seleccionadas</span>
+          }
           <span>Tallas</span>
           <div className="flex flex-wrap">
-            {sizes.map((size) => (
-              // bg-blue-500 text-white <--- si está seleccionado
-              <div
-                key={size}
-                className="flex  items-center justify-center w-10 h-10 mr-2 border rounded-md"
-              >
-                <span>{size}</span>
-              </div>
-            ))}
+            {sizes.map((size) => {
+              const selectedSize = getValues('sizes').includes(size)
+
+              return (
+                <div
+                onClick={() => changeSizes(size)}
+                  key={size}
+                  className={clsx(
+                    "flex  cursor-pointer items-center justify-center w-10 h-10 mr-2 border rounded-md transition-colors",
+                    selectedSize ? "bg-blue-500 text-white hover:bg-blue-700" : "hover:bg-gray-200"
+                  )}
+                >
+                  <span>{size}</span>
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex flex-col mb-2">
@@ -183,21 +233,23 @@ export const ProductForm = ({ product, categories }: Props) => {
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {
-                product.productImages.map((image) => (
-                  <div key={image.id}>
-                    <Image
+              {product.productImages.map((image) => (
+                <div key={image.id}>
+                  <Image
                     alt=""
                     src={`/products/${image.url}`}
                     width={300}
                     height={300}
                     className="rounded-t-md shadow-md"
-                    />
-                    <button type="button" className="bg-red-500 w-full hover:bg-red-700 text-white py-2 px-4 transition-all rounded-b-xl">Eliminar</button>
-
-                  </div>
-                ))
-              }
+                  />
+                  <button
+                    type="button"
+                    className="bg-red-500 w-full hover:bg-red-700 text-white py-2 px-4 transition-all rounded-b-xl"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
