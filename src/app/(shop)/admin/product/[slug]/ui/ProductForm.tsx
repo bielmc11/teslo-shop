@@ -8,8 +8,10 @@ import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner";
 import Image from "next/image";
 import clsx from "clsx";
+import { createUpdateProduct } from "@/actions";
 
 export type ProductsBD = {
+  id: string
   title: string;
   slug: string;
   description: string;
@@ -33,7 +35,6 @@ const sizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
 export const ProductForm = ({ product, categories }: Props) => {
   const [loading, setLoading] = useState(false);
-  const [tallas, setTallas] = useState(product.sizes);
 
   const params = useParams();
   const router = useRouter();
@@ -48,6 +49,7 @@ export const ProductForm = ({ product, categories }: Props) => {
     formState: { errors },
   } = useForm<ProductsBD>({
     defaultValues: {
+      id: product.id,
       title: product.title,
       slug: product.slug,
       description: product.description,
@@ -76,7 +78,31 @@ export const ProductForm = ({ product, categories }: Props) => {
 
   const onSubmit = async (data: ProductsBD) => {
     //Todo cuando envio el objeto recordar que tengo que cambiar el size por mi estado de tallas
-    console.log(data);
+    const formData = new FormData()
+
+    //!Me falta el id
+
+    formData.append('id', data.id ?? '')
+    formData.append('title', data.title )
+    formData.append('slug', data.slug)
+    formData.append('description', data.description)
+
+    formData.append('categoryId', data.categoryId)
+
+    formData.append('price', data.price.toString())
+    formData.append('inStock', data.inStock.toString())
+    formData.append('sizes', JSON.stringify(data.sizes))
+    formData.append('tags', JSON.stringify(data.tags))
+    formData.append('gender', data.gender)
+
+
+
+
+
+
+    const res = await createUpdateProduct(formData)
+    
+
     /* const res = await updateProducts(data, oldSlug);
 
 
@@ -201,7 +227,7 @@ export const ProductForm = ({ product, categories }: Props) => {
         {/* As checkboxes */}
         <div className="flex flex-col">
           {
-            tallas.length === 0 && <span className="text-xs text-red-600">No hay tallas seleccionadas</span>
+            getValues('sizes').length === 0 && <span className="text-xs text-red-600">No hay tallas seleccionadas</span>
           }
           <span>Tallas</span>
           <div className="flex flex-wrap">
