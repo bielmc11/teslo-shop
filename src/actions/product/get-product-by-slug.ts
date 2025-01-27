@@ -14,11 +14,10 @@ export const getProductBySlug = async (slug: string) => {
             }
         })
 
-        console.log(product)
+
 
         if(!product) return null
 
-        //return product
         return {
             ...product,
             productImages: product.images,

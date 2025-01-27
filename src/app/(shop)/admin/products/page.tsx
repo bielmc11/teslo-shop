@@ -14,7 +14,7 @@ export default async function NamePage() {
       <Title title="Mantenimiento de Productos" />
       <div className="flex max-w-[1600px] flex-col mx-auto ">
         <Link
-          href="/admin/newProducts"
+          href="/admin/product/new"
           className="btn-primary sm:max-w-[150px] self-end mb-4"
         >
           Nuevo producto{" "}

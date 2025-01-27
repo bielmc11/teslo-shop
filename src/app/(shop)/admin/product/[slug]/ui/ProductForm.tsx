@@ -27,7 +27,7 @@ export type ProductsBD = {
 };
 
 interface Props {
-  product: ProductsBD;
+  product: Partial<ProductsBD>;
   categories: { id: string; name: string }[];
 }
 
@@ -82,7 +82,10 @@ export const ProductForm = ({ product, categories }: Props) => {
 
     //!Me falta el id
 
-    formData.append('id', data.id ?? '')
+    if(data.id){
+      formData.append('id', data.id ?? '')
+    }
+
     formData.append('title', data.title )
     formData.append('slug', data.slug)
     formData.append('description', data.description)
@@ -224,6 +227,17 @@ export const ProductForm = ({ product, categories }: Props) => {
 
       {/* Selector de tallas y fotos */}
       <div className="w-full">
+      <div className="flex flex-col mb-2">
+        {
+          errors.inStock && <span className="text-sm text-red-600">Campo obligatorio</span>
+        }
+          <span>Stock</span>
+          <input
+            {...register("inStock", { required: true })}
+            type="number"
+            className="p-2 border rounded-md bg-gray-200"
+          />
+        </div>
         {/* As checkboxes */}
         <div className="flex flex-col">
           {
@@ -259,7 +273,7 @@ export const ProductForm = ({ product, categories }: Props) => {
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {product.productImages.map((image) => (
+              {product?.productImages?.map((image) => (
                 <div key={image.id}>
                   <Image
                     alt=""
