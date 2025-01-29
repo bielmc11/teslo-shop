@@ -11,6 +11,11 @@ export const getAllProducts = async () => {
             },
             take: 10
         })
+
+        const totalProducts = await prisma.product.count()
+        console.log(totalProducts)
+        const totalPages = totalProducts / take
+        
         return {
             ok: true,
             products

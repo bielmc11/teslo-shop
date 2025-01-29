@@ -12,6 +12,7 @@ import "./slideshow.css";
 import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { useState } from "react";
 import Image from "next/image";
+import { ProductImage } from "../product-image/ProductImage";
 
 interface Props {
   images: string[];
@@ -24,7 +25,7 @@ export const ProductSlideShow = ({ className, images, title }: Props) => {
   return (
     <div className={` ${className} flex flex-col items-center`}>
       <Swiper
-      className="max-w-[1000px]"
+        className="max-w-[1000px]"
         style={
           {
             "--swiper-navigation-color": "#fff",
@@ -39,12 +40,22 @@ export const ProductSlideShow = ({ className, images, title }: Props) => {
         thumbs={{ swiper: thumbsSwiper }}
         modules={[FreeMode, Navigation, Thumbs, Autoplay]}
       >
-        {images.map((image) => (
-          <SwiperSlide key={image} className="h-[500px] md:h-800px ">
-            <Image
+        {images.length === 0 && (
+          <SwiperSlide className="h-[500px] md:h-800px ">
+            <ProductImage
               width={800}
               height={600}
-              src={`/products/${image}`}
+              alt={title}
+              className="rouned-lg object-cover md:object-cover lg:object-contain  "
+            />
+          </SwiperSlide>
+        )}
+        {images.map((image) => (
+          <SwiperSlide key={image} className="h-[500px] md:h-800px ">
+            <ProductImage
+              width={800}
+              height={600}
+              src={image}
               alt={title}
               className="rouned-lg object-cover md:object-cover lg:object-contain  "
             />

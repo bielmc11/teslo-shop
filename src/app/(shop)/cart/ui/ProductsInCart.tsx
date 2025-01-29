@@ -5,6 +5,7 @@ import { QuantitySelector } from "@/components/inedx";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
+import { ProductImage } from "@/components/product/product-image/ProductImage";
 
 export const ProductsInCart = () => {
   //Aqui vuelve a ocurrir un error de hidratacion por desajustes al coger info del localStorage
@@ -32,8 +33,8 @@ export const ProductsInCart = () => {
 
       {  (loaded && productsInCart.length > 0) &&   productsInCart.map((product) => (
         <div key={`${product.slug}-${product.size}`} className="flex items-center mb-5">
-          <Image
-            src={`/products/${product.image}`}
+          <ProductImage
+            src={product.image}
             width={100}
             height={100}
             alt={product.title}

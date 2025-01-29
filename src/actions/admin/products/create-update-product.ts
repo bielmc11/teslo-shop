@@ -88,6 +88,8 @@ export const createUpdateProduct = async (formData: FormData) => {
           }
         },
       });
+
+      console.log({ createdProduct: product });
     }
   });
 

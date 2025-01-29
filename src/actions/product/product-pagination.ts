@@ -22,7 +22,6 @@ export const getPaginatedProductsWithImages = async ({
   if (isNaN(Number(take))) take = 10;
   if (take < 1) take = 1;
 
-  console.log('mi genero es: jeje:     ;',gender)
   try {
     //1- Obtener los productos (paginados)
     const products = await prisma.product.findMany({

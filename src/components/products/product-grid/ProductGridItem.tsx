@@ -1,4 +1,5 @@
 'use client'
+import { ProductImage } from "@/components/product/product-image/ProductImage";
 import { Product } from "@/interfaces/product.interface";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +10,7 @@ interface Props {
 }
 
 export const ProductGridItem = ({ product }: Props) => {
-    const [first,setFirst] = useState(product.images[0])
+    const [first,setFirst] = useState(product?.images[0])
 
     const onMouseOver = () => {
         setFirst(product.images[1])
@@ -26,8 +27,8 @@ export const ProductGridItem = ({ product }: Props) => {
         className="rounded-md overflow-hidden fade-in group"
     >
       <Link href={`/product/${product.slug}`}>
-        <Image
-          src={`/products/${first}`}
+        <ProductImage
+          src={first}
           alt={product.title}
           className="w-full object-cover rounded-md"
           width={500}

@@ -1,13 +1,21 @@
-import { getAllProducts } from "@/actions";
+import { getAllProducts, getPaginatedProductsWithImages } from "@/actions";
 import { Title } from "@/components/inedx";
+import { MyPagination } from "@/components/pagination/Pagination";
+import { ProductImage } from "@/components/product/product-image/ProductImage";
 import { currencyFormat } from "@/utils/currencyFormat";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function NamePage() {
-  const { ok, products } = await getAllProducts();
+interface Props {
+  searchParams: {
+    page: string;
+  };
+}
 
-  //TODO hacer paginacion
+export default async function NamePage({ searchParams }: Props) {
+  const page = searchParams.page ? parseInt(searchParams.page) : 1;
+  const { totalPages, currentPage, products } =
+    await getPaginatedProductsWithImages({ page });
 
   return (
     <div>
@@ -17,7 +25,7 @@ export default async function NamePage() {
           href="/admin/product/new"
           className="btn-primary sm:max-w-[150px] self-end mb-4"
         >
-          Nuevo producto{" "}
+          Nuevo producto
         </Link>
         <table>
           <thead className="bg-gray-200 border-b h-10">
@@ -36,21 +44,27 @@ export default async function NamePage() {
                 <tr key={product.id} className="border-b-4 border-gray-200">
                   <td>
                     <Link href={`/product/${product.slug}`}>
-                      <Image
-                        src={`/products/${product.images[0].url}`}
+                      <ProductImage
                         width={120}
                         height={120}
-                        alt="producto"
+                        alt={product.title}
+                        //src={`/products/${product.images[0]}`}
+                        src={product?.images[0]}
                         className="object-contain rounded"
                       />
                     </Link>
                   </td>
                   <td>
-                    <Link href={`/admin/product/${product.slug}`} className="hover:underline">
+                    <Link
+                      href={`/admin/product/${product.slug}`}
+                      className="hover:underline"
+                    >
                       {product.title}
                     </Link>
                   </td>
-                  <td className="font-medium">{currencyFormat(product.price)}</td>
+                  <td className="font-medium">
+                    {currencyFormat(product.price)}
+                  </td>
                   <td>{product.gender}</td>
                   <td className="font-medium">{product.inStock}</td>
                   <td className="font-medium">
@@ -63,6 +77,7 @@ export default async function NamePage() {
             })}
           </tbody>
         </table>
+        <MyPagination totalPages={totalPages} page={currentPage} />
       </div>
     </div>
   );
