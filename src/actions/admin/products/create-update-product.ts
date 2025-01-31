@@ -2,12 +2,13 @@
 
 import prisma from "@/lib/prisma";
 import { Product, Size } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const dataSchema = z.object({
   id: z.string().uuid().optional(),
   title: z.string().min(3).max(255),
-  description: z.string().min(3).max(255),
+  description: z.string().min(3).max(455),
   slug: z.string().min(3).max(255),
 
   price: z.coerce
@@ -32,6 +33,8 @@ export const createUpdateProduct = async (formData: FormData) => {
 
   if (!parsedData.success) {
     console.log("error parsedData no funciono");
+
+    console.log(parsedData.error);
     return {
       ok: false,
       error: parsedData.error,
@@ -42,60 +45,80 @@ export const createUpdateProduct = async (formData: FormData) => {
   product.slug = product.slug.toLowerCase();
 
   const { id, inStock, price, ...rest } = product;
+  
+  try{
+    const prismaTransaction = await prisma.$transaction(async (tx) => {
+      let product: Product;
 
-  const prismaTransaction = await prisma.$transaction(async (tx) => {
-    let product: Product;
-    const tagsArray = rest.tags
-      .split(",")
-      .map((tag) => tag.trim().toLowerCase());
 
-    const processedList = rest.sizes.map((item) =>
-      item.replace(/[\[\]"]/g, "")
-    );
+      const tagsArray = rest.tags
+        .split(",")
+        .map((tag) => JSON.parse(tag.trim().toLowerCase()));
 
-    if (id) {
-      //si tengo id actualizar
-      product = await tx.product.update({
-        where: {
-          id: id,
-        },
-        data: {
-          ...rest,
-          sizes: processedList as Size[],
-          tags: {
-            set: tagsArray,
+        console.log(tagsArray);
+
+        
+        
+  
+      const processedList = rest.sizes.map((item) =>
+        item.replace(/[\[\]"]/g, "")
+      );
+  
+      if (id) {
+        //si tengo id actualizar
+        product = await tx.product.update({
+          where: {
+            id: id,
           },
-          inStock: Number(inStock),
-          price: Number(price),
-        },
-      });
+          data: {
+            ...rest,
+            sizes: processedList as Size[],
+            tags: tagsArray,
+            inStock: Number(inStock),
+            price: Number(price),
+          },
+        });
+  
+        console.log({ updatedProduct: product });
+      } else {
+        // si no tengo id crear
+  
+        console.log("creando producto");
+        console.log(rest);
+  
+        product = await tx.product.create({
+          data: {
+            ...rest,
+            inStock: Number(inStock),
+            price: Number(price),
+            sizes: processedList as Size[],
+            tags: tagsArray
+          },
+        });
+  
+        console.log({ createdProduct: product });
+      }
 
-      console.log({ updatedProduct: product });
-    } else {
-      // si no tengo id crear
+      return product;
+    });
 
-      console.log("creando producto");
-      console.log(rest);
+    console.log('creo que el problema puede vernir de aqui', product.slug)
+    return {
+      ok: true,
+      product: prismaTransaction
+    };
 
-      product = await tx.product.create({
-        data: {
-          ...rest,
-          inStock: Number(inStock),
-          price: Number(price),
-          sizes: processedList as Size[],
-          tags: {
-            set: tagsArray
-          }
-        },
-      });
+  }catch(e: any){
+    console.log(e.message)
 
-      console.log({ createdProduct: product });
+    return{
+      ok: false,
+      message: 'No se pudo actualizar/crear'
     }
-  });
+
+  }
+
 
   //TODO si todo sale bien revlidate path
 
-  return {
-    ok: true,
-  };
 };

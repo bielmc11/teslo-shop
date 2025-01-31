@@ -1,17 +1,15 @@
 "use client";
 
-import { updateProducts } from "@/actions/admin/products/update-products";
 import { Size } from "@/interfaces/product.interface";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast, Toaster } from "sonner";
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import Image from "next/image";
 import clsx from "clsx";
 import { createUpdateProduct } from "@/actions";
 
 export type ProductsBD = {
-  id: string
+  id: string;
   title: string;
   slug: string;
   description: string;
@@ -45,6 +43,7 @@ export const ProductForm = ({ product, categories }: Props) => {
     handleSubmit,
     getValues,
     watch,
+    control,
     setValue,
     formState: { errors },
   } = useForm<ProductsBD>({
@@ -65,55 +64,59 @@ export const ProductForm = ({ product, categories }: Props) => {
   });
 
   const changeSizes = (size: Size) => {
-
-    if (getValues('sizes').includes(size)) {
-      setValue('sizes', getValues('sizes').filter((s) => s !== size))
-      return
+    if (getValues("sizes").includes(size)) {
+      setValue(
+        "sizes",
+        getValues("sizes").filter((s) => s !== size)
+      );
+      return;
     }
-    setValue('sizes',[...getValues('sizes'), size])
-    
-  }
+    setValue("sizes", [...getValues("sizes"), size]);
+  };
 
-  watch('sizes')
+  //watch("sizes");
+
+  useWatch({name: 'sizes', control})
 
   const onSubmit = async (data: ProductsBD) => {
     //Todo cuando envio el objeto recordar que tengo que cambiar el size por mi estado de tallas
-    const formData = new FormData()
+    const formData = new FormData();
 
     //!Me falta el id
 
-    if(data.id){
-      formData.append('id', data.id ?? '')
+    console.log(data.tags)
+    console.log(JSON.stringify(data.tags))
+    console.log(JSON.parse(JSON.stringify(data.tags)))
+
+    if (data.id) {
+      formData.append("id", data.id ?? "");
     }
 
-    formData.append('title', data.title )
-    formData.append('slug', data.slug)
-    formData.append('description', data.description)
+    formData.append("title", data.title);
+    formData.append("slug", data.slug);
+    formData.append("description", data.description);
 
-    formData.append('categoryId', data.categoryId)
+    formData.append("categoryId", data.categoryId);
 
-    formData.append('price', data.price.toString())
-    formData.append('inStock', data.inStock.toString())
-    formData.append('sizes', JSON.stringify(data.sizes))
-    formData.append('tags', JSON.stringify(data.tags))
-    formData.append('gender', data.gender)
+    formData.append("price", data.price.toString());
+    formData.append("inStock", data.inStock.toString());
+    formData.append("sizes", JSON.stringify(data.sizes));
+    formData.append("tags", JSON.stringify(data.tags));
+    formData.append("gender", data.gender);
 
+    const { ok, product: updatedProduct } = await createUpdateProduct(formData);
 
+    if (!ok) {
+      alert("Error al guardar");
+      return;
+    }
 
+    if (updatedProduct) {
+      //router.push(`/admin/product/${updatedProduct?.slug}`);
+      router.replace(`/admin/product/${updatedProduct?.slug}`);
 
-
-
-    const res = await createUpdateProduct(formData)
-    
-
-    /* const res = await updateProducts(data, oldSlug);
-
-
-    toast.loading("Guardando...");
-
-    if (res.ok) {
-      toast.success("Guardado");
-    } */
+      //router.push(`/admin/product/${updatedProduct?.slug}`);
+    }
   };
 
   return (
@@ -123,11 +126,10 @@ export const ProductForm = ({ product, categories }: Props) => {
     >
       {/* Textos */}
       <div className="w-full">
-        {
-          errors.title && <span className="text-sm text-red-600">Campo obligatorio</span>
-        }
+        {errors.title && (
+          <span className="text-sm text-red-600">Campo obligatorio</span>
+        )}
         <div className="flex flex-col mb-2">
-          
           <span>Título</span>
           <input
             {...register("title", { required: true })}
@@ -137,9 +139,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
-        {
-          errors.slug && <span className="text-sm text-red-600">Campo obligatorio</span>
-        }
+          {errors.slug && (
+            <span className="text-sm text-red-600">Campo obligatorio</span>
+          )}
           <span>Slug</span>
           <input
             {...register("slug", { required: true })}
@@ -149,9 +151,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
-        {
-          errors.description && <span className="text-sm text-red-600">Campo obligatorio</span>
-        }
+          {errors.description && (
+            <span className="text-sm text-red-600">Campo obligatorio</span>
+          )}
           <span>Descripción</span>
           <textarea
             {...register("description", { required: true })}
@@ -161,9 +163,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
-        {
-          errors.price && <span className="text-sm text-red-600">Campo obligatorio</span>
-        }
+          {errors.price && (
+            <span className="text-sm text-red-600">Campo obligatorio</span>
+          )}
           <span>Price</span>
           <input
             {...register("price", { required: true })}
@@ -173,21 +175,22 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
-        {
-          errors.tags && <span className="text-sm text-red-600">Campo obligatorio</span>
-        }
+          {errors.tags && (
+            <span className="text-sm text-red-600">Campo obligatorio</span>
+          )}
           <span>Tags</span>
           <input
             {...register("tags", { required: true })}
             type="text"
+            autoFocus
             className="p-2 border rounded-md bg-gray-200"
           />
         </div>
 
         <div className="flex flex-col mb-2">
-        {
-          errors.gender && <span className="text-sm text-red-600">Campo obligatorio</span>
-        }
+          {errors.gender && (
+            <span className="text-sm text-red-600">Campo obligatorio</span>
+          )}
           <span>Gender</span>
           <select
             {...register("gender", { required: true })}
@@ -202,9 +205,9 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
 
         <div className="flex flex-col mb-2">
-        {
-          errors.categoryId && <span className="text-sm text-red-600">Campo obligatorio</span>
-        }
+          {errors.categoryId && (
+            <span className="text-sm text-red-600">Campo obligatorio</span>
+          )}
           <span>Categoria</span>
           <select
             {...register("categoryId", { required: true })}
@@ -227,10 +230,10 @@ export const ProductForm = ({ product, categories }: Props) => {
 
       {/* Selector de tallas y fotos */}
       <div className="w-full">
-      <div className="flex flex-col mb-2">
-        {
-          errors.inStock && <span className="text-sm text-red-600">Campo obligatorio</span>
-        }
+        <div className="flex flex-col mb-2">
+          {errors.inStock && (
+            <span className="text-sm text-red-600">Campo obligatorio</span>
+          )}
           <span>Stock</span>
           <input
             {...register("inStock", { required: true })}
@@ -240,21 +243,25 @@ export const ProductForm = ({ product, categories }: Props) => {
         </div>
         {/* As checkboxes */}
         <div className="flex flex-col">
-          {
-            getValues('sizes').length === 0 && <span className="text-xs text-red-600">No hay tallas seleccionadas</span>
-          }
+          {getValues("sizes").length === 0 && (
+            <span className="text-xs text-red-600">
+              No hay tallas seleccionadas
+            </span>
+          )}
           <span>Tallas</span>
           <div className="flex flex-wrap">
             {sizes.map((size) => {
-              const selectedSize = getValues('sizes').includes(size)
+              const selectedSize = getValues("sizes").includes(size);
 
               return (
                 <div
-                onClick={() => changeSizes(size)}
+                  onClick={() => changeSizes(size)}
                   key={size}
                   className={clsx(
                     "flex  cursor-pointer items-center justify-center w-10 h-10 mr-2 border rounded-md transition-colors",
-                    selectedSize ? "bg-blue-500 text-white hover:bg-blue-700" : "hover:bg-gray-200"
+                    selectedSize
+                      ? "bg-blue-500 text-white hover:bg-blue-700"
+                      : "hover:bg-gray-200"
                   )}
                 >
                   <span>{size}</span>
@@ -294,7 +301,6 @@ export const ProductForm = ({ product, categories }: Props) => {
           </div>
         </div>
       </div>
-      <Toaster position="bottom-right" />
     </form>
   );
 };
