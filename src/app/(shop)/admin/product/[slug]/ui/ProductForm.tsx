@@ -20,8 +20,8 @@ export type ProductsBD = {
   gender: "men" | "women" | "kid" | "unisex";
   categoryId: string;
 
-  images: string[];
-  productImages: { id: number; url: string; productId: string }[];
+  images?: any;
+  productImages?: { id: number; url: string; productId: string }[];
 };
 
 interface Props {
@@ -59,7 +59,8 @@ export const ProductForm = ({ product, categories }: Props) => {
       gender: product.gender,
       categoryId: product.categoryId,
 
-      images: product.images,
+      //por defecto el las pone undefined
+      images: undefined,
     },
   });
 
@@ -76,17 +77,13 @@ export const ProductForm = ({ product, categories }: Props) => {
 
   //watch("sizes");
 
-  useWatch({name: 'sizes', control})
+  useWatch({ name: "sizes", control });
 
   const onSubmit = async (data: ProductsBD) => {
     //Todo cuando envio el objeto recordar que tengo que cambiar el size por mi estado de tallas
     const formData = new FormData();
 
     //!Me falta el id
-
-    console.log(data.tags)
-    console.log(JSON.stringify(data.tags))
-    console.log(JSON.parse(JSON.stringify(data.tags)))
 
     if (data.id) {
       formData.append("id", data.id ?? "");
@@ -103,6 +100,28 @@ export const ProductForm = ({ product, categories }: Props) => {
     formData.append("sizes", JSON.stringify(data.sizes));
     formData.append("tags", JSON.stringify(data.tags));
     formData.append("gender", data.gender);
+
+
+    const mappedImages = []
+   if (data.images) {
+      for (let i = 0; i < data.images.length; i++) {
+        console.log(data?.images[i]);
+        const {name,size,type,lastModified} = data?.images[i];
+        mappedImages[i] = {name,size,type,lastModified}
+        
+        //formData.append("images", data?.images[i])
+        
+      }
+      console.log(mappedImages);
+      formData.append("images", JSON.stringify(mappedImages))
+    } 
+
+    
+
+ 
+
+    
+  
 
     const { ok, product: updatedProduct } = await createUpdateProduct(formData);
 
@@ -274,9 +293,10 @@ export const ProductForm = ({ product, categories }: Props) => {
             <span>Fotos</span>
             <input
               type="file"
-              multiple
+              multiple={true}
+              {...register("images")}
               className="p-2 border rounded-md bg-gray-200"
-              accept="image/png, image/jpeg"
+              accept="image/png, image/jpeg image/avif"
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

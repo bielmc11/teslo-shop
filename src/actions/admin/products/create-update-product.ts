@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { Product, Size } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { updateProducts } from "./update-products";
 
 const dataSchema = z.object({
   id: z.string().uuid().optional(),
@@ -24,6 +25,7 @@ const dataSchema = z.object({
   sizes: z.coerce.string().transform((val) => val.split(",")),
   tags: z.string(),
   gender: z.enum(["men", "women", "kid", "unisex"]),
+  images: z.string().optional(),
 });
 
 export const createUpdateProduct = async (formData: FormData) => {
@@ -44,26 +46,23 @@ export const createUpdateProduct = async (formData: FormData) => {
   const product = parsedData.data;
   product.slug = product.slug.toLowerCase();
 
-  const { id, inStock, price, ...rest } = product;
-  
-  try{
+  const { id, inStock, price,images, ...rest } = product;
+
+  try {
     const prismaTransaction = await prisma.$transaction(async (tx) => {
       let product: Product;
-
 
       const tagsArray = rest.tags
         .split(",")
         .map((tag) => JSON.parse(tag.trim().toLowerCase()));
 
-        console.log(tagsArray);
-
-        
-        
-  
       const processedList = rest.sizes.map((item) =>
         item.replace(/[\[\]"]/g, "")
       );
-  
+
+      console.log(images)
+      console.log(JSON.parse(images!))
+
       if (id) {
         //si tengo id actualizar
         product = await tx.product.update({
@@ -78,47 +77,44 @@ export const createUpdateProduct = async (formData: FormData) => {
             price: Number(price),
           },
         });
-  
+
         console.log({ updatedProduct: product });
+        //TODO si todo sale bien revlidate path
+
       } else {
         // si no tengo id crear
-  
-        console.log("creando producto");
-        console.log(rest);
-  
+
         product = await tx.product.create({
           data: {
             ...rest,
             inStock: Number(inStock),
             price: Number(price),
             sizes: processedList as Size[],
-            tags: tagsArray
+            tags: tagsArray,
           },
         });
-  
+
         console.log({ createdProduct: product });
       }
 
       return product;
     });
 
-    console.log('creo que el problema puede vernir de aqui', product.slug)
+
+   
+
+    
     return {
       ok: true,
-      product: prismaTransaction
+      product: prismaTransaction,
     };
 
-  }catch(e: any){
-    console.log(e.message)
+  } catch (e: any) {
+    console.log(e.message);
 
-    return{
+    return {
       ok: false,
-      message: 'No se pudo actualizar/crear'
-    }
-
+      message: "No se pudo actualizar/crear",
+    };
   }
-
-
-  //TODO si todo sale bien revlidate path
-
 };
