@@ -7,6 +7,7 @@ import { useForm, useWatch } from "react-hook-form";
 import Image from "next/image";
 import clsx from "clsx";
 import { createUpdateProduct } from "@/actions";
+import { revalidatePaths } from "@/actions/admin/products/revalidatePaths";
 
 export type ProductsBD = {
   id: string;
@@ -101,27 +102,17 @@ export const ProductForm = ({ product, categories }: Props) => {
     formData.append("tags", JSON.stringify(data.tags));
     formData.append("gender", data.gender);
 
-
-    const mappedImages = []
-   if (data.images) {
+    const mappedImages = [];
+    if (data.images) {
       for (let i = 0; i < data.images.length; i++) {
         console.log(data?.images[i]);
-        const {name,size,type,lastModified} = data?.images[i];
-        mappedImages[i] = {name,size,type,lastModified}
-        
-        //formData.append("images", data?.images[i])
-        
+        const { name, size, type, lastModified } = data?.images[i];
+        mappedImages[i] = { name, size, type, lastModified };
+
       }
-      console.log(mappedImages);
-      formData.append("images", JSON.stringify(mappedImages))
-    } 
-
-    
-
- 
-
-    
-  
+      ;
+      formData.append("images", JSON.stringify(mappedImages));
+    }
 
     const { ok, product: updatedProduct } = await createUpdateProduct(formData);
 
@@ -131,10 +122,8 @@ export const ProductForm = ({ product, categories }: Props) => {
     }
 
     if (updatedProduct) {
-      //router.push(`/admin/product/${updatedProduct?.slug}`);
-      router.replace(`/admin/product/${updatedProduct?.slug}`);
-
-      //router.push(`/admin/product/${updatedProduct?.slug}`);
+      router.push(`/admin/product/${updatedProduct?.slug}`);
+      revalidatePaths(["/admin/products", "/"]);
     }
   };
 

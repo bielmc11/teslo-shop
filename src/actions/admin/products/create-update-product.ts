@@ -5,6 +5,7 @@ import { Product, Size } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { updateProducts } from "./update-products";
+import { redirect } from "next/navigation";
 
 const dataSchema = z.object({
   id: z.string().uuid().optional(),
@@ -60,9 +61,7 @@ export const createUpdateProduct = async (formData: FormData) => {
         item.replace(/[\[\]"]/g, "")
       );
 
-      console.log(images)
-      console.log(JSON.parse(images!))
-
+      
       if (id) {
         //si tengo id actualizar
         product = await tx.product.update({
@@ -77,13 +76,14 @@ export const createUpdateProduct = async (formData: FormData) => {
             price: Number(price),
           },
         });
-
-        console.log({ updatedProduct: product });
+        
+        //console.log({ updatedProduct: product });
         //TODO si todo sale bien revlidate path
 
+        
       } else {
         // si no tengo id crear
-
+        
         product = await tx.product.create({
           data: {
             ...rest,
@@ -93,28 +93,43 @@ export const createUpdateProduct = async (formData: FormData) => {
             tags: tagsArray,
           },
         });
-
+        
         console.log({ createdProduct: product });
       }
-
+      
       return product;
     });
-
-
-   
-
     
+    
+    if(images !== '[]'){
+      console.log(JSON.parse(images!))
+      const img = uploadImages(JSON.parse(images!));
+
+    }
+
     return {
       ok: true,
       product: prismaTransaction,
     };
-
+    
   } catch (e: any) {
     console.log(e.message);
-
+    
     return {
       ok: false,
       message: "No se pudo actualizar/crear",
     };
   }
 };
+
+
+
+const uploadImages = async (images : File[]) => {
+  console.log(images)
+  try{
+
+  }catch(e){
+    
+  }
+
+}
