@@ -2,12 +2,14 @@
 
 import { Size } from "@/interfaces/product.interface";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import Image from "next/image";
 import clsx from "clsx";
 import { createUpdateProduct } from "@/actions";
 import { revalidatePaths } from "@/actions/admin/products/revalidatePaths";
+import { ProductImage } from "@/components/product/product-image/ProductImage";
+import { deleteProductImage } from "@/actions/admin/products/delete-product-image";
 
 export type ProductsBD = {
   id: string;
@@ -21,7 +23,7 @@ export type ProductsBD = {
   gender: "men" | "women" | "kid" | "unisex";
   categoryId: string;
 
-  images?: any;
+  images?: FileList;
   productImages?: { id: number; url: string; productId: string }[];
 };
 
@@ -43,7 +45,6 @@ export const ProductForm = ({ product, categories }: Props) => {
     register,
     handleSubmit,
     getValues,
-    watch,
     control,
     setValue,
     formState: { errors },
@@ -102,16 +103,12 @@ export const ProductForm = ({ product, categories }: Props) => {
     formData.append("tags", JSON.stringify(data.tags));
     formData.append("gender", data.gender);
 
-    const mappedImages = [];
-    if (data.images) {
-      for (let i = 0; i < data.images.length; i++) {
-        console.log(data?.images[i]);
-        const { name, size, type, lastModified } = data?.images[i];
-        mappedImages[i] = { name, size, type, lastModified };
 
+    if(data.images){
+      for (let i = 0; i < data.images.length; i++){
+        console.log(data.images[i]);
+        formData.append("images", (data.images[i]));
       }
-      ;
-      formData.append("images", JSON.stringify(mappedImages));
     }
 
     const { ok, product: updatedProduct } = await createUpdateProduct(formData);
@@ -123,9 +120,17 @@ export const ProductForm = ({ product, categories }: Props) => {
 
     if (updatedProduct) {
       router.push(`/admin/product/${updatedProduct?.slug}`);
-      revalidatePaths(["/admin/products", "/"]);
+
+      revalidatePaths(["/admin/products", "/",`admin/product/${updatedProduct?.slug}`]);
     }
   };
+
+
+  const onDeleteImage = async (image: { id: number, url: string }) => {
+    const eliminado = await deleteProductImage(image.id, image.url);
+    console.log(eliminado);
+
+  }
 
   return (
     <form
@@ -285,21 +290,22 @@ export const ProductForm = ({ product, categories }: Props) => {
               multiple={true}
               {...register("images")}
               className="p-2 border rounded-md bg-gray-200"
-              accept="image/png, image/jpeg image/avif"
+              accept="image/*"
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {product?.productImages?.map((image) => (
                 <div key={image.id}>
-                  <Image
+                  <ProductImage
                     alt=""
-                    src={`/products/${image.url}`}
+                    src={`${image.url}`}
                     width={300}
                     height={300}
-                    className="rounded-t-md shadow-md"
+                    className="rounded-t-md shadow-md overflow-hidden max-h-[300px]"
                   />
                   <button
                     type="button"
+                    onClick={() => onDeleteImage(image)}
                     className="bg-red-500 w-full hover:bg-red-700 text-white py-2 px-4 transition-all rounded-b-xl"
                   >
                     Eliminar

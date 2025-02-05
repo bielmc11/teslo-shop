@@ -2,10 +2,14 @@
 
 import prisma from "@/lib/prisma";
 import { Product, Size } from "@prisma/client";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { updateProducts } from "./update-products";
-import { redirect } from "next/navigation";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME ?? "",
+  api_key: process.env.CLOUDINARY_API_KEY ?? "",
+  api_secret: process.env.CLOUDINARY_API_SECRET ?? "",
+});
 
 const dataSchema = z.object({
   id: z.string().uuid().optional(),
@@ -26,13 +30,13 @@ const dataSchema = z.object({
   sizes: z.coerce.string().transform((val) => val.split(",")),
   tags: z.string(),
   gender: z.enum(["men", "women", "kid", "unisex"]),
-  images: z.string().optional(),
 });
 
 export const createUpdateProduct = async (formData: FormData) => {
   const data = Object.fromEntries(formData);
 
   const parsedData = dataSchema.safeParse(data);
+
 
   if (!parsedData.success) {
     console.log("error parsedData no funciono");
@@ -47,7 +51,7 @@ export const createUpdateProduct = async (formData: FormData) => {
   const product = parsedData.data;
   product.slug = product.slug.toLowerCase();
 
-  const { id, inStock, price,images, ...rest } = product;
+  const { id, inStock, price, ...rest } = product;
 
   try {
     const prismaTransaction = await prisma.$transaction(async (tx) => {
@@ -61,7 +65,6 @@ export const createUpdateProduct = async (formData: FormData) => {
         item.replace(/[\[\]"]/g, "")
       );
 
-      
       if (id) {
         //si tengo id actualizar
         product = await tx.product.update({
@@ -76,14 +79,12 @@ export const createUpdateProduct = async (formData: FormData) => {
             price: Number(price),
           },
         });
-        
+
         //console.log({ updatedProduct: product });
         //TODO si todo sale bien revlidate path
-
-        
       } else {
         // si no tengo id crear
-        
+
         product = await tx.product.create({
           data: {
             ...rest,
@@ -93,28 +94,36 @@ export const createUpdateProduct = async (formData: FormData) => {
             tags: tagsArray,
           },
         });
-        
+
         console.log({ createdProduct: product });
       }
-      
+
       return product;
     });
-    
-    
-    if(images !== '[]'){
-      console.log(JSON.parse(images!))
-      const img = uploadImages(JSON.parse(images!));
 
+    //TODO TENGO QUE VER CUANDO NO MANDO IMAGES QUE PASA DE VERDAD
+
+
+    if (formData.getAll('images')) {
+      const img = await uploadImages(formData.getAll('images') as File[]);
+      if(img) {
+        await prisma.productImage.createMany({
+          data: img.map(image => ({
+            url: image!,
+            productId: product.id!,
+          }))
+        })
+      }
     }
 
     return {
       ok: true,
       product: prismaTransaction,
     };
-    
+
   } catch (e: any) {
     console.log(e.message);
-    
+
     return {
       ok: false,
       message: "No se pudo actualizar/crear",
@@ -122,14 +131,43 @@ export const createUpdateProduct = async (formData: FormData) => {
   }
 };
 
+const uploadImages = async( images: File[] ) => {
+  try {
+
+    const uploadPromises = images.map( async( image) => {
+
+      try {
+        const buffer = await image.arrayBuffer();
+        const base64Image = Buffer.from(buffer).toString('base64');;
+
+        const mimeType = image.type ?? 'image/png';
+
+        const dataUrl = `data:${mimeType};base64,${base64Image}`
+        
+  
+       
+        return cloudinary.uploader.upload(`data:${mimeType};base64,${ base64Image }`,{
+          resource_type: 'image',
+        })
+          .then( r => r.secure_url );
+        
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
+    })
 
 
-const uploadImages = async (images : File[]) => {
-  console.log(images)
-  try{
+    const uploadedImages = await Promise.all( uploadPromises );
+    return uploadedImages;
 
-  }catch(e){
+
+  } catch (error) {
+
+    console.log(error);
+    return null;
     
   }
+
 
 }
