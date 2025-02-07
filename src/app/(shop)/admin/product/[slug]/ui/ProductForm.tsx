@@ -22,8 +22,8 @@ export type ProductsBD = {
   tags: string[];
   gender: "men" | "women" | "kid" | "unisex";
   categoryId: string;
-
-  images?: FileList;
+//ANTES PONIA FILElIST PERO LA PAGINA ANTERIOR SE QUEJABA
+  images?: any;
   productImages?: { id: number; url: string; productId: string }[];
 };
 
@@ -162,6 +162,7 @@ export const ProductForm = ({ product, categories }: Props) => {
             className="p-2 border rounded-md bg-gray-200"
           />
         </div>
+
 
         <div className="flex flex-col mb-2">
           {errors.description && (

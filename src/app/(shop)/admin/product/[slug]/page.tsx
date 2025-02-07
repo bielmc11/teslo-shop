@@ -21,6 +21,7 @@ export default async function ProductPage({ params }: Props) {
   const { ok, categories } = catergoriesData;
 
 
+
   if (!product && slug !== "new") {
     redirect(`/admin/products`);
   }
@@ -33,7 +34,11 @@ export default async function ProductPage({ params }: Props) {
     <div>
       <Title title={product?.title ?? "Producto no encontrado"} />
 
-      <ProductForm product={product ?? {}} categories={categories!} />
+
+    
+
+    {/* /TODO! MIRAR TIPO PRODUCT */}
+     <ProductForm product={product ?? {}} categories={categories!} />
     </div>
   );
 }
