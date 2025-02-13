@@ -1,6 +1,3 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-
 export const metadata = {
   title: "SEO Title",
   description: "SEO Title",
@@ -12,7 +9,7 @@ export default async function CheckoutLayout({
 }) {
   //const session = await auth();
 
- /*  if(!session?.user) {
+  /*  if(!session?.user) {
     redirect("/auth/login");
   } */
 

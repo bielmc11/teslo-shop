@@ -37,7 +37,6 @@ export const createUpdateProduct = async (formData: FormData) => {
 
   const parsedData = dataSchema.safeParse(data);
 
-
   if (!parsedData.success) {
     console.log("error parsedData no funciono");
 
@@ -103,16 +102,15 @@ export const createUpdateProduct = async (formData: FormData) => {
 
     //TODO TENGO QUE VER CUANDO NO MANDO IMAGES QUE PASA DE VERDAD
 
-
-    if (formData.getAll('images')) {
-      const img = await uploadImages(formData.getAll('images') as File[]);
-      if(img) {
+    if (formData.getAll("images")) {
+      const img = await uploadImages(formData.getAll("images") as File[]);
+      if (img) {
         await prisma.productImage.createMany({
-          data: img.map(image => ({
+          data: img.map((image) => ({
             url: image!,
             productId: product.id!,
-          }))
-        })
+          })),
+        });
       }
     }
 
@@ -120,7 +118,6 @@ export const createUpdateProduct = async (formData: FormData) => {
       ok: true,
       product: prismaTransaction,
     };
-
   } catch (e: any) {
     console.log(e.message);
 
@@ -131,43 +128,30 @@ export const createUpdateProduct = async (formData: FormData) => {
   }
 };
 
-const uploadImages = async( images: File[] ) => {
+const uploadImages = async (images: File[]) => {
   try {
-
-    const uploadPromises = images.map( async( image) => {
-
+    const uploadPromises = images.map(async (image) => {
       try {
         const buffer = await image.arrayBuffer();
-        const base64Image = Buffer.from(buffer).toString('base64');;
+        const base64Image = Buffer.from(buffer).toString("base64");
 
-        const mimeType = image.type ?? 'image/png';
+        const mimeType = image.type ?? "image/png";
 
-        const dataUrl = `data:${mimeType};base64,${base64Image}`
-        
-  
-       
-        return cloudinary.uploader.upload(`data:${mimeType};base64,${ base64Image }`,{
-          resource_type: 'image',
-        })
-          .then( r => r.secure_url );
-        
+        return cloudinary.uploader
+          .upload(`data:${mimeType};base64,${base64Image}`, {
+            resource_type: "image",
+          })
+          .then((r) => r.secure_url);
       } catch (error) {
         console.log(error);
         return null;
       }
-    })
+    });
 
-
-    const uploadedImages = await Promise.all( uploadPromises );
+    const uploadedImages = await Promise.all(uploadPromises);
     return uploadedImages;
-
-
   } catch (error) {
-
     console.log(error);
     return null;
-    
   }
-
-
-}
+};

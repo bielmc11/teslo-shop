@@ -1,9 +1,8 @@
-import { getAllProducts, getPaginatedProductsWithImages } from "@/actions";
+import { getPaginatedProductsWithImages } from "@/actions";
 import { Title } from "@/components/inedx";
 import { MyPagination } from "@/components/pagination/Pagination";
 import { ProductImage } from "@/components/product/product-image/ProductImage";
 import { currencyFormat } from "@/utils/currencyFormat";
-import Image from "next/image";
 import Link from "next/link";
 
 interface Props {

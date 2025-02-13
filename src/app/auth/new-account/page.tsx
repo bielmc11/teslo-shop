@@ -1,5 +1,4 @@
 import { CreateUserForm } from "@/components/auth/CreateUserForm";
-import { NewAccount } from "@/components/auth/NewAccount";
 import { titleFont } from "@/config/fonts";
 
 export default function NewAccountPage() {

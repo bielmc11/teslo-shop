@@ -35,11 +35,9 @@ interface Props {
 const sizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
 export const ProductForm = ({ product, categories }: Props) => {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
-  const params = useParams();
   const router = useRouter();
-  const oldSlug = params.slug as string;
 
   const {
     register,
