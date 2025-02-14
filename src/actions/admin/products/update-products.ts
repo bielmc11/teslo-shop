@@ -29,7 +29,6 @@ export const updateProducts = async ( data: ProductsBD , oldSlug: string) => {
     const validatedData = productSchema.safeParse(updatedData);
     if (!validatedData.success) throw new Error("Error al validar los datos");
     
-    console.log(typeof data.price)
     const updatedProduct = await prisma.product.update({
       where: {
         slug: oldSlug,

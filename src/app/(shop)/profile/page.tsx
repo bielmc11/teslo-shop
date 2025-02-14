@@ -9,9 +9,6 @@ export default async function NamePage() {
   }
 
   //Creo que para que tenga mas info hay que hacer un callBack y en authjs y en el metodo signIn login o algo asi retornar el user con mas info llamando a prisma
-
-  console.log(session.user);
-
   return (
     <div>
       <h2>Page Perfil Data</h2>

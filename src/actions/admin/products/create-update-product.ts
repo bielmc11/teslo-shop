@@ -39,7 +39,6 @@ export const createUpdateProduct = async (formData: FormData) => {
 
   if (!parsedData.success) {
     console.log("error parsedData no funciono");
-
     console.log(parsedData.error);
     return {
       ok: false,
@@ -78,12 +77,7 @@ export const createUpdateProduct = async (formData: FormData) => {
             price: Number(price),
           },
         });
-
-        //console.log({ updatedProduct: product });
-        //TODO si todo sale bien revlidate path
       } else {
-        // si no tengo id crear
-
         product = await tx.product.create({
           data: {
             ...rest,

@@ -104,7 +104,6 @@ export const ProductForm = ({ product, categories }: Props) => {
 
     if(data.images){
       for (let i = 0; i < data.images.length; i++){
-        console.log(data.images[i]);
         formData.append("images", (data.images[i]));
       }
     }
@@ -126,7 +125,6 @@ export const ProductForm = ({ product, categories }: Props) => {
 
   const onDeleteImage = async (image: { id: number, url: string }) => {
     const eliminado = await deleteProductImage(image.id, image.url);
-    console.log(eliminado);
 
   }
 

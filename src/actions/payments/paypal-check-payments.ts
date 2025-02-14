@@ -7,56 +7,47 @@ export const paypalCheckPayment = async (transactionId: string) => {
   //1- obtengo el token para hacer la llamda
   const authToken = await getPaypalBearerToken();
 
-  console.log("authToken", authToken);
-
   if (!authToken) return { ok: false, message: "No se pudo obtener el token" };
 
   //2- Hago la llamada para ver la info de mi transaccion
   const res = await verifyPaypalPayment(transactionId, authToken);
-
-  console.log('la segunda funcion es', res);
 
   if (!res) return { ok: false, message: "Error al verificar la transaccion" };
 
   const { status, purchase_units } = res;
   const { invoice_id } = purchase_units[0];
 
-  
-  //console.log(invoice_id);
-  //const {} = purchase_units[0] //TODO:
+  if (status !== "COMPLETED")
+    return { ok: false, message: "No se ha pagado la orden" };
 
-  if(status !== "COMPLETED") return { ok: false, message: "No se ha pagado la orden" }
-
-
-  try{ //TODO: 
-         //1-) Sacar el boton si ya esta pagado
-         //2-) el id lo tengo que mandar tambien pillado de la URL params creo
+  try {
+    //TODO:
+    //1-) Sacar el boton si ya esta pagado
+    //2-) el id lo tengo que mandar tambien pillado de la URL params creo
     await prisma.order.update({
       where: {
         //TODO CAMBIAR ESTE ID POR EL QUE SACARE DE LA INFO DE LA LLAMADA A AL TRANSACCION
-        id: invoice_id ,
+        id: invoice_id,
       },
       data: {
         isPaid: true,
         paidAt: new Date(),
-      }
-    })
+      },
+    });
 
     //REvalido el path
-    revalidatePath(`/orders/${invoice_id}`)
+    revalidatePath(`/orders/${invoice_id}`);
 
     return { ok: true, message: "Transaccion pagada correctamente" };
-
-  }catch(e){
+  } catch (e) {
     console.log(e);
     return {
       ok: false,
       message: "Error al actualizar la BD",
-    }
+    };
   }
 
   //TODO revalidar un path para que next js refresque la pagina
-
 };
 
 const getPaypalBearerToken = async () => {
@@ -86,9 +77,7 @@ const getPaypalBearerToken = async () => {
     const resul = await fetch(oauth2Url, {
       ...requestOptions,
       cache: "no-store",
-    }).then((res) =>
-      res.json()
-    );
+    }).then((res) => res.json());
     return resul.access_token;
   } catch (e) {
     console.log(e);
@@ -103,8 +92,6 @@ const verifyPaypalPayment = async (
   const myHeaders = new Headers();
   myHeaders.append("Authorization", `Bearer ${barerToken}`);
 
-  console.log(transactionId, barerToken);
-
   const paypalOrderUrl = process.env.PAYPAL_ORDERS_URL ?? "";
 
   const requestOptions = {
@@ -113,13 +100,10 @@ const verifyPaypalPayment = async (
   };
 
   try {
-    const res = await fetch(
-      `${paypalOrderUrl}/${transactionId}`,
-      {
-        ...requestOptions,
-        cache: "no-store",
-      }
-    );
+    const res = await fetch(`${paypalOrderUrl}/${transactionId}`, {
+      ...requestOptions,
+      cache: "no-store",
+    });
     //Me falta el return joder
     return res.json();
   } catch (e) {

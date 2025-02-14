@@ -11,10 +11,6 @@ export const LoginForm = () => {
   const [state, dispatch] = useFormState(authentificate, undefined);
   const router = useRouter();
 
-  //const session = useSession()
-  //console.log('session', session.data)
-
-
   if (state === "success") {
     router.push("/");
   }

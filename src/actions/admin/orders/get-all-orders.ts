@@ -9,8 +9,6 @@ export const getAllOrders = async () => {
         const session = await auth()
         if(!session?.user) throw new Error('No hay sesión iniciada')
         if(session.user.role !== 'admin') throw new Error('No tienes permisos para ver los pedidos')
-
-        console.log(session.user)
         
         const orders = await prisma.order.findMany({
             include: {
