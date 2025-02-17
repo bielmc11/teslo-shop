@@ -23,17 +23,18 @@ export async function generateMetadata({ params }: Props) {
 
   return {
     title: product?.title ?? "Producto no encontrado",
-    description: product?.description ?? "Producto no encontrado",
+    description: product?.description ?? "",
     openGraph: {
       title: product?.title ?? "Producto no encontrado",
       description: product?.description ?? "Producto no encontrado",
-      images: [`/products7${product?.images[0]}`],
+      images: [`/products/${product?.images[0]}`],
     },
   };
 }
 
 export default async function PriductPage({ params }: Props) {
   //TODO AQUI TAMBIEN CREO QUE DEBERIA hacer un getstatic params?? vara revalidar y hacer catch????
+
   const { slug } = params;
 
   const product = await getProductBySlug(slug);

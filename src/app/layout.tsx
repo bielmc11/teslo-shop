@@ -19,6 +19,11 @@ export const metadata: Metadata = {
     default: "Home - Teslo | Shop",
   },
   description: "Una tienda de prductos",
+  keywords: "prductos, shop, teslo",
+  openGraph: {
+    images: ['/products/1549268-00-A_0_2000.jpg']
+  }
+
 };
 
 export default function RootLayout({
@@ -27,9 +32,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="changeScroll">
+    <html lang="es" className="changeScroll">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-no-repeat min-h-screen bg-fixed `} /* IGUAL ESTO DE BG FIXED HAY QUE QUITARLO */
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-no-repeat min-h-screen bg-fixed `}
       >
         {children}
       </body>
